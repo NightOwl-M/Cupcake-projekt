@@ -1,43 +1,48 @@
 package app.entities;
 
-public class Productline {
 
-    private int orderLineId;
+public class ProductLine {
+    private int productLineId;
     private int quantity;
-    private Cupcake cupcake;
     private float totalPrice;
+    private Cupcake cupcake;
 
-    public Productline(int orderLineId, int quantity, Cupcake cupcake, float totalPrice){
-
-        this.orderLineId = orderLineId;
-        this.quantity = quantity;
+    public ProductLine(int productLineId, Cupcake cupcake, int quantity, float totalPrice) {
         this.cupcake = cupcake;
+        this.productLineId = productLineId;
+        this.quantity = quantity;
         this.totalPrice = totalPrice;
-
     }
 
-    public int getOrderLineId() {
-
-        return orderLineId;
-
+    public ProductLine(Cupcake cupcake, int quantity, float totalPrice) {
+        this.cupcake = cupcake;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
     }
 
-    public int getQuantity() {
+    public ProductLine(Cupcake cupcake, int quantity) {
+        this.cupcake = cupcake;
+        this.quantity = quantity;
+    }
 
-        return quantity;
-
+    public ProductLine(int productLineId, Cupcake cupcake) {
+        this.productLineId = productLineId;
+        this.cupcake = cupcake;
     }
 
     public Cupcake getCupcake() {
-
         return cupcake;
+    }
 
+    public int getProductLineId() {
+        return productLineId;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     public float getTotalPrice() {
-
-        return totalPrice;
-
+        return cupcake.getPrice() * quantity;
     }
-
 }
