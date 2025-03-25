@@ -17,5 +17,4 @@ public class Cupcake {
         return "Total price: "+bottom.getBottomPrice()+topping.getToppingPrice()+" DKK";
 
     }
-
 }
