@@ -1,20 +1,24 @@
 package app.entities;
 
 public class Cupcake {
+    private Bottom bottom;
+    private Topping topping;
 
-    Bottom bottom;
-    Topping topping;
-
-    public Cupcake(Bottom bottom, Topping topping){
-
+    public Cupcake(Bottom bottom, Topping topping) {
         this.bottom = bottom;
         this.topping = topping;
-
     }
 
-    public float getTotalPrice(){
+    public int getPrice() {
+        return (int) (bottom.getBottomPrice() + topping.getToppingPrice());
+    }
 
-        return "Total price: "+bottom.getBottomPrice()+topping.getToppingPrice()+" DKK";
+    public Bottom getBottom() {
 
+        return bottom;
+    }
+
+    public Topping getTopping() {
+        return topping;
     }
 }
