@@ -1,49 +1,47 @@
 package app.entities;
 
 public class User {
-
     private int userId;
-
-    private String userName;
-
-    private String email;
-
+    private String username;
     private String password;
+    private float balance;
+    private boolean isAdmin;
 
-    private int balance;
-
-    private String role;
-
-    public User(int userId, String userName, String email, String password, int balance, String role) {
+    public User(int userId, String username, String password, float balance, boolean isAdmin) {
         this.userId = userId;
-        this.userName = userName;
-        this.email = email;
+        this.username = username;
         this.password = password;
         this.balance = balance;
-        this.role = role;
+        this.isAdmin = isAdmin;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public int getUserId() {
         return userId;
     }
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
     public String getPassword() {
         return password;
     }
 
-    public int getBalance() {
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public float getBalance() {
         return balance;
     }
 
-    public String getRole() {
-        return role;
+    public boolean pay(float amount) {
+        if (balance >= amount) {
+            balance -= amount;
+            return true;
+        } else {
+            return false;
+        }
     }
+
 }
