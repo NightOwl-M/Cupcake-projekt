@@ -1,0 +1,109 @@
+@startuml
+!pragma Layout smetana
+
+    class Main {
+    }
+
+package "Entities" {
+    class Cupcake {
+    - Bottom bottom
+    - Topping topping
+    + getters();
+    + getTotalPrice();
+    }
+
+    class Topping {
+    - String toppingName
+    - float toppingPrice
+    + getToppingName();
+    + getToppingPrice();
+    }
+
+    class Bottom {
+    - String bottomName
+    - float bottomPrice
+    + getBottomName();
+    + getBottomPrice();
+    }
+
+    class User {
+    - int userId
+    - String userName
+    - String email
+    - String password
+    - int balance
+    - string role
+    + getters();
+    }
+    class ProductLine {
+    - int orderLineId
+    - int quantity
+    - Cupcake cupcake
+    - float totalPrice
+    + getters();
+    }
+
+    class Order {
+    - int orderId
+    - User user
+    - List<ProductLine> productList
+    - float orderPrice
+    - boolean isPaid
+    + getters();
+    }
+}
+Cupcake *-- Topping
+Cupcake *-- Bottom
+
+package "Persistence" {
+    class orderMapper {
+    + createOrder();
+    + getOrdersByUser();
+    + getAllOrders();
+    + getOrderById();
+    + updateOrder();
+    + deleteOrder();
+    }
+class userMapper {
+    + login();
+    + createUser();
+    + getAllUsers();
+    }
+}
+Order *-- ProductLine
+Order *-- User
+ProductLine *-- Cupcake
+
+package "Controllers" {
+    class UserController {
+    + addRoutes();
+    + login();
+    + createUser();
+    + getAllUsers();
+    }
+
+    class OrderController {
+    + addRoutes();
+    + createOrder();
+    + getOrdersByUser();
+    + getAllOrders();
+    + getOrderById();
+    + updateOrder();
+    + deleteOrder();
+    }
+}
+package "Test" {
+    class Test {
+    }
+}
+Main -- UserController
+Main -- OrderController
+UserController -- userMapper
+OrderController -- orderMapper
+
+@enduml
+implements ..|>
+extends <|-- (is-a)
+composition *-- (must-have)
+Aggregation o-- (can-have)
+Associering <--
