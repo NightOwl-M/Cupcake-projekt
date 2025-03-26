@@ -25,20 +25,18 @@ public class OrderController {
         User currentUser = ctx.sessionAttribute("currentUser");
 
         try {
-            // Hent data fra form
+
             float orderPrice = Float.parseFloat(ctx.formParam("total_price"));
             List<String> productIds = ctx.formParams("product_ids");
             List<String> toppingIds = ctx.formParams("topping_ids");
             List<String> quantities = ctx.formParams("quantities");
 
-            // Denne if opdater brugerens balance.
             if (!UserMapper.updateBalance(currentUser.getId(), orderPrice, connectionPool)) {
                 ctx.attribute("message", "Kunne ikke opdatere balance");
                 ctx.render("basket.html");
                 return;
             }
 
-            // Denne kode opretter ordre
             Order newOrder = OrderMapper.createOrder(currentUser.getId(), orderPrice, true, connectionPool);
             int orderId = newOrder.getOrderId();
 
@@ -68,8 +66,6 @@ public class OrderController {
         }
     }
 
-
-    // metode til at hente pris for bund og topping
     public static float getPriceById(int id, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "SELECT price FROM bottom WHERE bottom_id = ?"; // Juster for topping, hvis nødvendigt
         try (Connection connection = connectionPool.getConnection();
@@ -86,7 +82,6 @@ public class OrderController {
         }
     }
 
-    // produktlinje til databasen
     public static void addProductLine(int bottomId, Integer toppingId, int orderId, int quantity, float totalPrice, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "INSERT INTO productline (bottom_id, topping_id, order_id, quantity, total_price) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = connectionPool.getConnection();
@@ -167,5 +162,3 @@ public class OrderController {
             }
         }
     }
-
-

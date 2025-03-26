@@ -9,7 +9,7 @@ public class ProductLine {
     private String toppingName;
     private float toppingPrice;
 
-    // Konstruktor
+
     public ProductLine(int bottomId, String bottomName, float bottomPrice, int toppingId, String toppingName, float toppingPrice) {
         this.bottomName = bottomName;
         this.bottomPrice = bottomPrice;
@@ -37,6 +37,4 @@ public class ProductLine {
     public float getTotalPrice() {
         return totalPrice;
     }
-
 }
-
