@@ -31,13 +31,13 @@ public class UserController {
     }
 
     private static void createUser(Context ctx, ConnectionPool connectionPool) {
-        String email = ctx.formParam("user_email"); //TODO: Angiv korrekt i html
+        String email = ctx.formParam("email");
         String password1 = ctx.formParam("password1");
         String password2 = ctx.formParam("password2");
 
         if (password1.equals(password2)) {
             try {
-                UserMapper.createUser(email, password1, connectionPool);
+                UserMapper.createuser(email, password1, connectionPool);
                 ctx.attribute("message", "Du er nu oprettet med brugernavn: " + email + ". Nu skal du logge på");
                 ctx.render("index.html");
 
