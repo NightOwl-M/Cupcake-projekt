@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class UserMapper {
 
     public static void createuser(String email, String password, ConnectionPool connectionPool) throws DatabaseException {
-        String sql = "insert into users (user_name, password) values (?,?)"; //TODO: Afgør navn på user_name kolonne
+        String sql = "insert into users (email, password) values (?,?)";
 
         try (
                 Connection connection = connectionPool.getConnection();
