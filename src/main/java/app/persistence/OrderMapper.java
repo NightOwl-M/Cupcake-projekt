@@ -11,7 +11,7 @@ public class OrderMapper {
     public static Order getOrderById(int orderId, ConnectionPool connectionPool) throws DatabaseException {
 
         Order order = null;
-        String sql = "select * from task where order_id = ?";
+        String sql = "select * from order where order_id = ?";
 
         try (
 
