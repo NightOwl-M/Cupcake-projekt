@@ -3,6 +3,7 @@ package app.controllers;
 
 import app.entities.User;
 import app.persistence.ConnectionPool;
+import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
@@ -34,7 +35,27 @@ public class OrderController {
             ctx.render("index.html");
 
         }
-
     }
 
+    public static void createOrder(Context ctx, ConnectionPool connectionPool) {
+        User currentUser = ctx.sessionAttribute("currentUser"); //TODO angiv korrekt i html
+        try {
+            float orderPrice = Float.parseFloat(ctx.formParam("total_price")); //TODO angiv korrekt i html
+            boolean isPaid;
+
+            if (UserMapper.updateBalance(currentUser.getId(), orderPrice)){
+                isPaid = true;
+                Order newOrder = OrderMapper.createOrder(currentUser.getId(), orderPrice, isPaid);
+                ctx.attribute("message", "Ordre gennemført");
+                ctx.attribute("newOrder", newOrder); //TODO angiv korrekt i html
+                ctx.render("order_complete.html"); //TODO angiv korrekt i html
+            } else {
+                ctx.attribute("message", "Noget gik galt prøv igen");
+                ctx.render("basket.html"); //TODO angiv korrekt i html
+            }
+        } catch (DatabaseException e) {
+            ctx.attribute("message", "Noget gik galt, prøv igen");
+            ctx.render("basket.html"); //TODO angiv korrekt i html
+        }
+    }
 }
