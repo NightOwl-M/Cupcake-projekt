@@ -42,4 +42,21 @@ public class OrderMapper {
 
     }
 
+    public static void deleteOrder(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "delete from order where order_id = ?";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setInt(1, orderId);
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected != 1) {
+                throw new DatabaseException("Failed to update table...");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to delete order", e.getMessage());
+        }
+    }
+
 }

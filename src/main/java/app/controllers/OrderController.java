@@ -35,7 +35,6 @@ public class OrderController {
             ctx.render("index.html");
 
         }
-
     }
 
     public static void createOrder(Context ctx, ConnectionPool connectionPool) {
