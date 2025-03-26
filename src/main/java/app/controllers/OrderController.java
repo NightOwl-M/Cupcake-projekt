@@ -37,4 +37,24 @@ public class OrderController {
 
     }
 
+    private static void deleteOrder(Context ctx, ConnectionPool connectionPool) {
+        User user = ctx.sessionAttribute("currentUser");
+
+        try {
+
+            int orderId = Integer.parseInt(ctx.formParam("orderId"));
+            OrderMapper.deleteOrder(orderId, connectionPool);
+            List<Order> orderList = OrderMapper.getAllOrders(user.getId(), connectionPool);
+            ctx.attribute("orderlist", orderList); //Slettes, så snart at task.html er renderent og frigører memory
+            ctx.render("orderlist.html");
+
+        } catch (NumberFormatException | DatabaseException exception) {
+
+            ctx.attribute("message", "Der gik noget galt");
+            ctx.render("index.html");
+
+        }
+
+    }
+
 }
