@@ -1,7 +1,6 @@
 package app.controllers;
 
 import app.entities.User;
-
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
@@ -9,11 +8,27 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 
 public class UserController {
+
     // I denne addRoutes metode håndterer vi brugerhåndteringen.
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
-        //app.post("/login", ctx -> login(ctx, connectionPool));
+        app.post("/login", ctx -> login(ctx, connectionPool));
     }
-}
+
+    public static void login(Context ctx, ConnectionPool connectionPool) {
+        String email = ctx.formParam("email");
+        String password = ctx.formParam("password");
+
+        try {
+            User user = UserMapper.login(email, password, connectionPool);
+            ctx.sessionAttribute("currentUser", user);
+            ctx.render("/HTML1.html");
+
+            UserMapper.login(email, password, connectionPool);
+        } catch (DatabaseException e) {
+            ctx.attribute("message", e.getMessage());
+            ctx.render("HTML.html");
+        }
+    }
 
     private static void createUser(Context ctx, ConnectionPool connectionPool) {
         String email = ctx.formParam("user_email"); //TODO: Angiv korrekt i html
@@ -22,7 +37,7 @@ public class UserController {
 
         if (password1.equals(password2)) {
             try {
-                UserMapper.createuser(email, password1, connectionPool);
+                UserMapper.createUser(email, password1, connectionPool);
                 ctx.attribute("message", "Du er nu oprettet med brugernavn: " + email + ". Nu skal du logge på");
                 ctx.render("index.html");
 
@@ -37,3 +52,4 @@ public class UserController {
         }
     }
 }
+
