@@ -39,7 +39,7 @@ public class UserMapper {
 
     public static List<User> getAllUsers(ConnectionPool connectionPool) throws DatabaseException {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT user_id, user_name, user_password, balance, is_admin FROM public.users";
+        String sql = "SELECT user_id, email, user_password, balance, is_admin FROM public.users";
 
         try (Connection connection = connectionPool.getConnection()) {
             try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -47,7 +47,7 @@ public class UserMapper {
 
                 while (rs.next()) {
                     int id = rs.getInt("user_id");
-                    String email = rs.getString("user_name");
+                    String email = rs.getString("email");
                     String password = rs.getString("user_password");
                     float balance = rs.getFloat("balance");
                     boolean isAdmin = rs.getBoolean("is_admin");
