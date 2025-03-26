@@ -7,6 +7,9 @@ import app.persistence.UserMapper;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 
+import java.sql.SQLException;
+import java.util.List;
+
 public class UserController {
 
     // I denne addRoutes metode håndterer vi brugerhåndteringen.
@@ -51,5 +54,13 @@ public class UserController {
             ctx.render("createuser.html");
         }
     }
+
+    public static void getAllUsers(Context ctx, ConnectionPool connectionPool) throws SQLException {
+        List<User> userList = UserMapper.getAllUsers(connectionPool);
+
+        ctx.attribute("userList", userList);
+        ctx.render("user_list.html"); // TODO Udfyld med tilsvarende HTML side
+    }
+
 }
 
