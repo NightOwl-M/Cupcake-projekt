@@ -30,7 +30,6 @@ package "Entities" {
 
     class User {
     - int userId
-    - String userName
     - String email
     - String password
     - int balance
