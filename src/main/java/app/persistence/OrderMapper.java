@@ -46,7 +46,7 @@ public class OrderMapper {
 
     public static List<Order> getOrdersByUser(int userId, ConnectionPool connectionPool) throws DatabaseException {
         List<Order> orderList = new ArrayList<>();
-        String sql = "select * from orders where user_id = ? order by name";
+        String sql = "select * from orders where user_id = ? order by email";
 
         try (
                 Connection connection = connectionPool.getConnection();
