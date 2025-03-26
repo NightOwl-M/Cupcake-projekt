@@ -1,5 +1,7 @@
 package app.controllers;
 
+import app.entities.User;
+
 import app.exceptions.DatabaseException;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
@@ -11,6 +13,7 @@ public class UserController {
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
         //app.post("/login", ctx -> login(ctx, connectionPool));
     }
+}
 
     private static void createUser(Context ctx, ConnectionPool connectionPool) {
         String email = ctx.formParam("user_email"); //TODO: Angiv korrekt i html
