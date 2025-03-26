@@ -1,4 +1,3 @@
---
 -- PostgreSQL database dump
 --
 
@@ -208,7 +207,7 @@ ALTER SEQUENCE public.topping_topping_id_seq OWNED BY public.topping.topping_id;
 
 CREATE TABLE public.users (
                               user_id integer NOT NULL,
-                              user_name character varying NOT NULL,
+                              email character varying NOT NULL,
                               user_password character varying NOT NULL,
                               balance numeric DEFAULT 0 NOT NULL,
                               is_admin boolean DEFAULT false NOT NULL
@@ -299,14 +298,6 @@ INSERT INTO public.bottom VALUES (5, 'Almond', 7.00);
 -- TOC entry 3392 (class 0 OID 24616)
 -- Dependencies: 218
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-
-
---
--- TOC entry 3394 (class 0 OID 24626)
--- Dependencies: 220
--- Data for Name: productline; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 
