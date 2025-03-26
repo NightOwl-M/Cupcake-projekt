@@ -2,6 +2,7 @@ package app.persistence;
 
 import java.sql.ResultSet;
 import app.entities.Order;
+import app.entities.User;
 import app.exceptions.DatabaseException;
 import java.sql.*;
 
@@ -59,4 +60,31 @@ public class OrderMapper {
         }
     }
 
+    public static Order createOrder(int userId, float orderPrice, boolean isPaid, ConnectionPool connectionPool) throws DatabaseException {
+        Order newOrder = null;
+
+        String sql = "INSERT INTO orders (order_price, paid_status, user_id) VALUES (?,?,?)";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
+        ) {
+            ps.setFloat(1, orderPrice);
+            ps.setBoolean(2, isPaid);
+            ps.setInt(3, userId);
+
+            int rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 1) {
+                ResultSet rs = ps.getGeneratedKeys();
+                rs.next();
+                int newOrderId = rs.getInt(1);
+                newOrder = new Order(newOrderId, userId, orderPrice, isPaid);
+            } else {
+                throw new DatabaseException("Error when inserting order");
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error when inserting order", e.getMessage());
+        }
+        return newOrder;
+    }
 }

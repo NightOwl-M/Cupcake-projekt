@@ -45,7 +45,7 @@ public class OrderController {
 
             if (UserMapper.updateBalance(currentUser.getId(), orderPrice)){
                 isPaid = true;
-                Order newOrder = OrderMapper.createOrder(currentUser.getId(), orderPrice, isPaid);
+                Order newOrder = OrderMapper.createOrder(currentUser.getId(), orderPrice, isPaid, connectionPool);
                 ctx.attribute("message", "Ordre gennemført");
                 ctx.attribute("newOrder", newOrder); //TODO angiv korrekt i html
                 ctx.render("order_complete.html"); //TODO angiv korrekt i html
