@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import app.entities.Order;
 import app.exceptions.DatabaseException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class OrderMapper {
@@ -40,6 +42,30 @@ public class OrderMapper {
 
         return order;
 
+    }
+
+    public static List<Order> getOrdersByUser(int userId, ConnectionPool connectionPool) throws DatabaseException {
+        List<Order> orderList = new ArrayList<>();
+        String sql = "select * from orders where user_id = ? order by name";
+
+        try (
+                Connection connection = connectionPool.getConnection();
+                PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("order_id");
+                int userIdentification = rs.getInt("user_id");
+                float price = rs.getFloat("order_price");
+                boolean isPaid = rs.getBoolean("paid_status");
+                orderList.add(new Order(id, userIdentification, price, isPaid));
+
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Failed to retrieve orders from user...", e.getMessage());
+        }
+        return orderList;
     }
 
 }
