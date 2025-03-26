@@ -1,0 +1,60 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.header {
+    background-color: #3b1d5e;
+    padding: 20px;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav {
+    background-color: #f4f4f4;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.container {
+    padding: 40px;
+}
+
+select, button {
+    padding: 10px;
+    margin: 10px;
+}
+
+.login-btn {
+    background-color: #4a8f5a;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.nav {
+    display: flex;
+    justify-content: flex-start; /* Flytter links til venstre */
+    padding: 10px 20px;
+    background: #ff7f50;
+}
+
+.nav-container {
+    display: flex;
+    gap: 15px; /* Afstand mellem links */
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+

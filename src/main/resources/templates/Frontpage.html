@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olsker Cupcakes</title>
+    <link href="../public/css/frontpage.css" th:href="@{/css/frontpage.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="header">
+    <!-- Logo billede -->
+    <img alt="logo" src="../../public/images/logoMedSkrift.png" th:src="@{/images/logoMedSkrift.png}"/>
+</div>
+
+<!-- Navigationsmenu -->
+<div class="nav">
+    <div class="nav-container">
+        <a href="#">Login</a>
+        <a href="#">Opret bruger</a>
+    </div>
+</div>
+<!-- overskrifter -->
+<div class="container">
+    <h2>Velkommen ombord</h2>
+    <h3>Øens bedste cupcakes</h3>
+    <small>Obs. Du skal være logget ind for at bestille</small>
+</div>
+
+<div class="footer">
+    <!-- Logo billede -->
+    <img alt="logo" src="../../public/images/cupcakes1.png" th:src="@{/images/cupcakes1.png}"/>
+</div>
+</body>
+</html>
