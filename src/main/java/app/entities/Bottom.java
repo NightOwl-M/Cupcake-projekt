@@ -33,5 +33,4 @@ public class Bottom {
     public int getBottomId() {
         return bottomId;
     }
-
 }

@@ -38,7 +38,6 @@ public class UserMapper {
         }
     }
 
-
     public static void createUser(String email, String password, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "INSERT INTO users (email, user_password) VALUES (?, ?)";
 
@@ -55,7 +54,6 @@ public class UserMapper {
             throw new DatabaseException("DB fejl");
         }
     }
-
 
     public static List<User> getAllUsers(ConnectionPool connectionPool) throws DatabaseException {
         List<User> users = new ArrayList<>();
@@ -94,5 +92,3 @@ public class UserMapper {
         }
     }
 }
-
-
