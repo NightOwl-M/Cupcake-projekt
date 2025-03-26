@@ -25,7 +25,7 @@ public class UserMapper {
                     return new User(
                             rs.getInt("user_id"),
                             email,
-                            password, // Ingen hashing
+                            password, // Ingen hashing = hviilket betyder ingen kryptering af password :)
                             rs.getFloat("balance"),
                             rs.getBoolean("is_admin")
                     );
@@ -79,5 +79,20 @@ public class UserMapper {
         }
         return users;
     }
+
+    public static boolean updateBalance(int userId, float amount, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE users SET balance = balance - ? WHERE user_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setFloat(1, amount);
+            ps.setInt(2, userId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved opdatering af balance: " + e.getMessage());
+        }
+    }
 }
+
 
