@@ -59,7 +59,7 @@ public class UserController {
         List<User> userList = UserMapper.getAllUsers(connectionPool);
 
         ctx.attribute("userList", userList);
-        ctx.render("user_list.html"); // TODO Udfyld med tilsvarende HTML side
+        ctx.render("user_list.html");
     }
 
 }
