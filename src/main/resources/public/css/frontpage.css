@@ -17,44 +17,52 @@ body {
 
 .nav {
     background-color: #f4f4f4;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.container {
-    padding: 40px;
-}
-
-select, button {
-    padding: 10px;
-    margin: 10px;
-}
-
-.login-btn {
-    background-color: #4a8f5a;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-}
-
-.nav {
-    display: flex;
-    justify-content: flex-start; /* Flytter links til venstre */
-    padding: 10px 20px;
+    padding: 10px 40px;
     background: #ff7f50;
-}
-
-.nav-container {
     display: flex;
-    gap: 15px; /* Afstand mellem links */
+    justify-content: space-between; /* Placerer logout og kurv i hjørnerne */
+    align-items: center;
 }
 
 .nav a {
     color: white;
     text-decoration: none;
     font-weight: bold;
+}
+
+.nav-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between; /* Placerer indholdet i venstre og højre hjørne */
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    position: absolute; /* Fastgør kurven i højre hjørne */
+    right: 90px; /* Justér afstanden fra højre kant */
+}
+
+.cart-link {
+    display: flex;
+    align-items: center;
+}
+
+/* Email */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Placerer email og logout link med lidt afstand */
+}
+
+/* Email */
+.user-email {
+    font-size: 16px; /* Juster størrelsen på emailen */
+    color: white;    /* Sørg for at emailen er synlig, hvis baggrunden er mørk */
 }
 
