@@ -21,8 +21,7 @@
 
 <!-- Login formular -->
 <div class="container">
-    <h3>Log ind</h3>
-    <h4>Indtast dine loginoplysninger:</h4>
+    <h3>Log in</h3>
 
     <form th:action="@{/login}" method="post">
         <div class="form-group">
@@ -30,14 +29,14 @@
             <input type="email" id="email" name="email" required placeholder="E-mail">
         </div>
         <div class="form-group">
-            <label for="password">Adgangskode:</label>
+            <label for="password">Password:</label>
             <input type="password" id="password" name="password" required placeholder="Password">
         </div>
-        <button type="submit" formaction="/login">Log ind</button>
+        <button type="submit" formaction="/login">Log in</button>
     </form>
 
     <!-- Mangler redirect links til diverse af knapperne -->
-    <p class="signup-link">Har du ikke en bruger? <a href="createuserpage.html">Opret bruger</a></p>
+    <p class="signup-link">Don't have a user? <a href="createuserpage.html">Create a user</a></p>
 </div>
 
 <div class="footer">
