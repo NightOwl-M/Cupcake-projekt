@@ -103,7 +103,6 @@ public class UserMapper {
         }
     }
 
-
     public static List<User> getAllUsers(ConnectionPool connectionPool) throws DatabaseException {
         List<User> users = new ArrayList<>();
         String sql = "SELECT user_id, email, balance, is_admin FROM users";
