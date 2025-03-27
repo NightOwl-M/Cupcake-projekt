@@ -19,7 +19,7 @@ public class OrderController {
     // I denne addRoutes metode håndterer vi alle "Handelsrelateret funktioner.
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
        // app.get("/", ctx -> bacetpage(ctx, connectionPool));
-        app.get("/view-orders", ctx -> getAllOrders(ctx, connectionPool));
+        app.get("/view-orders", ctx -> getOrdersByUser(ctx, connectionPool));
     }
 
     public static void createOrder(Context ctx, ConnectionPool connectionPool) {
@@ -123,7 +123,7 @@ public class OrderController {
             try {
                 List<Order> orders = OrderMapper.getAllOrders(connectionPool);
                 ctx.attribute("orders", orders);
-                ctx.render("view-orders.html");
+                ctx.render("admin-all-orders");
             } catch (DatabaseException e) {
                 ctx.status(500).result("Error fetching all orders: " + e.getMessage());
             }

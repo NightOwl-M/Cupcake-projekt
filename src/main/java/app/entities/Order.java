@@ -36,6 +36,10 @@ public class Order {
         return orderPrice;
     }
 
+    public List<ProductLine> getProductLineList() {
+        return productLineList;
+    }
+
     public void setProductLines(List<ProductLine> productLineList) {
         this.productLineList = productLineList;
     }

@@ -13,6 +13,7 @@ import java.util.List;
 public class UserController {
 
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
+        app.get("/login", ctx -> ctx.render("LoginPage.html"));
         app.post("/login", ctx -> login(ctx, connectionPool));
         app.post("/create-user", ctx -> createUser(ctx, connectionPool));
         app.get("/users", ctx -> getAllUsers(ctx, connectionPool));
@@ -24,17 +25,17 @@ public class UserController {
 
         if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
             ctx.attribute("message", "Email og password må ikke være tomme!");
-            ctx.render("HTML.html");
+            ctx.render("LoginPage.html");
             return;
         }
 
         try {
             User user = UserMapper.login(email, password, connectionPool);
             ctx.sessionAttribute("currentUser", user);
-            ctx.render("/HTML1.html");
+            ctx.render("Frontpage.html");
         } catch (DatabaseException e) {
             ctx.attribute("message", e.getMessage());
-            ctx.render("HTML.html");
+            ctx.render("LoginPage.html");
         }
     }
 
