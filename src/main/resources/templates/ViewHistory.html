@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olsker Cupcakes</title>
+  <link href="../public/css/viewhistory.css" th:href="@{/css/viewhistory.css}" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<div class="header">
+  <img alt="logo" src="../../public/images/logoMedSkrift.png" th:src="@{/images/logoMedSkrift.png}"/>
+</div>
+
+<div class="nav">
+  <div class="nav-container">
+    <div class="nav-left">
+      <span class="user-email" th:text="${userEmail}"></span>
+      <!-- Opdateret logout link -->
+      <a href="/logout" class="nav-link" id="logout-link">Logout</a>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="cart-link">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-text">Kurv</span>
+        <span class="cart-count" th:text="${not #lists.isEmpty(productLinesList) ? #lists.size(productLinesList) : 0}"></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Sektion for tidligere bestillinger -->
+  <div class="order-history" th:if="${not #lists.isEmpty(previousOrders)}">
+    <h2>Order view</h2>
+    <div class="order-list">
+      <div class="order-item" th:each="order : ${previousOrders}">
+        <div class="order-header">
+          <span class="order-date" th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></span>
+          <span class="order-total" th:text="'Total: ' + ${order.totalPrice} + ' kr'"></span>
+        </div>
+        <div class="product-line" th:each="productLine : ${order.productLines}">
+          <div class="product-info">
+            <span class="product-name" th:text="${productLine.bottom.name} + ' + ' + ${productLine.topping.name}"></span>
+            <span class="product-quantity" th:text="${productLine.quantity} + ' stk'"></span>
+          </div>
+          <div class="product-price" th:text="${productLine.price} + ' kr'"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Eksisterende form til nye bestillinger -->
+  <form method="post">
+    <div class="cupcake-selection-container">
+      <div class="input-wrapper">
+        <div class="input-box">
+        </div>
+      </div>
+
+      <div class="input-wrapper">
+        <div class="input-box">
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="footer"></div>
+
+<!-- Tilføj JavaScript for logout bekræftelse -->
+<script>
+  document.getElementById('logout-link').addEventListener('click', function(e) {
+    if (!confirm('Er du sikker på at du vil logge ud?')) {
+      e.preventDefault(); // Annullerer logout hvis brugeren klikker "Annuller"
+    }
+  });
+</script>
+
+</body>
+</html>

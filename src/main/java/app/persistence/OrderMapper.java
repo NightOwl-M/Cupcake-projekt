@@ -76,7 +76,7 @@ public class OrderMapper {
         }
     }
 
-    public static Order createOrder(int userId, float orderPrice, boolean isPaid, ConnectionPool connectionPool) throws DatabaseException {
+    public static Order createOrder(int userId, float orderPrice, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "INSERT INTO orders (user_id, order_price, paid_status) VALUES (?, ?, ?)";
         Order newOrder = null;
 
@@ -85,7 +85,7 @@ public class OrderMapper {
 
             ps.setInt(1, userId);
             ps.setFloat(2, orderPrice);
-            ps.setBoolean(3, isPaid);
+            ps.setBoolean(3, false);
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected == 1) {
@@ -93,7 +93,7 @@ public class OrderMapper {
                 try (ResultSet rs = ps.getGeneratedKeys()) {
                     if (rs.next()) {
                         int orderId = rs.getInt(1);
-                        newOrder = new Order(orderId, userId, orderPrice, isPaid);
+                        newOrder = new Order(orderId, userId, orderPrice, false);
                     }
                 }
             } else {
@@ -105,7 +105,8 @@ public class OrderMapper {
         return newOrder;
     }
 
-        public static List<Order> getOrdersByUser(int userId, ConnectionPool connectionPool) throws DatabaseException {
+
+    public static List<Order> getOrdersByUser(int userId, ConnectionPool connectionPool) throws DatabaseException {
             String sql = "SELECT * FROM orders WHERE user_id = ?";
             List<Order> orders = new ArrayList<>();
 
@@ -147,22 +148,4 @@ public class OrderMapper {
             return orders;
         }
 
-        public static void updateOrder(int orderId, float orderPrice, boolean isPaid, ConnectionPool connectionPool)
-                throws DatabaseException {
-            String sql = "UPDATE orders SET order_price = ?, paid_status = ? WHERE order_id = ?";
-
-            try (Connection connection = connectionPool.getConnection();
-                 PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.setFloat(1, orderPrice);
-                ps.setBoolean(2, isPaid);
-                ps.setInt(3, orderId);
-
-                int rowsAffected = ps.executeUpdate();
-                if (rowsAffected != 1) {
-                    throw new DatabaseException("Failed to update order");
-                }
-            } catch (SQLException e) {
-                throw new DatabaseException("Error updating order: " + e.getMessage());
-            }
-        }
     }

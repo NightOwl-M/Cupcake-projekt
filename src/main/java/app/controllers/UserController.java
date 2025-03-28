@@ -13,9 +13,11 @@ import java.util.List;
 public class UserController {
 
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
+        app.get("/login", ctx -> ctx.render("LoginPage.html"));
         app.post("/login", ctx -> login(ctx, connectionPool));
+        app.get("/create-user", ctx -> ctx.render("createuser.html"));
         app.post("/create-user", ctx -> createUser(ctx, connectionPool));
-        app.get("/users", ctx -> getAllUsers(ctx, connectionPool));
+        app.get("/logout", UserController::logout);
     }
 
     public static void login(Context ctx, ConnectionPool connectionPool) {
@@ -24,21 +26,21 @@ public class UserController {
 
         if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
             ctx.attribute("message", "Email og password må ikke være tomme!");
-            ctx.render("HTML.html");
+            ctx.render("LoginPage.html");
             return;
         }
 
         try {
             User user = UserMapper.login(email, password, connectionPool);
             ctx.sessionAttribute("currentUser", user);
-            ctx.render("/HTML1.html");
+            ctx.redirect("/viewhistory");
         } catch (DatabaseException e) {
             ctx.attribute("message", e.getMessage());
-            ctx.render("HTML.html");
+            ctx.render("LoginPage.html");
         }
     }
 
-    private static void createUser(Context ctx, ConnectionPool connectionPool) {
+    public static void createUser(Context ctx, ConnectionPool connectionPool) {
         String email = ctx.formParam("user_email");
         String password1 = ctx.formParam("password1");
         String password2 = ctx.formParam("password2");
@@ -58,7 +60,7 @@ public class UserController {
         try {
             UserMapper.createUser(email, password1, connectionPool);
             ctx.attribute("message", "Du er nu oprettet.");
-            ctx.render("index.html");
+            ctx.render("loginpage.html");
         } catch (DatabaseException e) {
             ctx.attribute("message", e.getMessage());
             ctx.render("createuser.html");
@@ -75,4 +77,10 @@ public class UserController {
             ctx.render("error.html");
         }
     }
+
+    public static void logout(Context ctx) {
+        ctx.req().getSession().invalidate();
+        ctx.redirect("/login?logout=true"); // Her kommer der en pop-up med besked om man er sikker på logout.
+    }
+
 }
