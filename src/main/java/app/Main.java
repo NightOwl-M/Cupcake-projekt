@@ -26,11 +26,10 @@ public class Main {
             config.fileRenderer(new JavalinThymeleaf(ThymeleafConfig.templateEngine()));
         }).start(7070);
 
-        app.get("/", ctx -> ctx.render("Frontpage"));
-        app.get("/login", ctx -> ctx.render("loginPage"));
-        app.post("/login", ctx -> UserController.login(ctx, connectionPool));
-        app.get("/create-user", ctx -> ctx.render("createuser"));
         UserController.addRoutes(app, connectionPool);
         OrderController.addRoutes(app, connectionPool);
+
+        app.get("/", ctx -> ctx.render("Frontpage"));
+
     }
 }
