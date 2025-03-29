@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Olsker Cupcakes</title>
-  <link href="../public/css/view-orders.css" th:href="@{/css/view-orders.css}" rel="stylesheet"/>
+  <link href="../public/css/viewhistory.css" th:href="@{/css/viewhistory.css}" rel="stylesheet"/>
   <link href="../public/css/frontpage.css" th:href="@{/css/frontpage.css}" rel="stylesheet"/>
 </head>
 <body>
@@ -16,10 +16,14 @@
 <!-- Navigationsmenu -->
 <div class="nav">
   <div class="nav-container">
-    <a href="#">Login</a>
-    <a href="#">Opret bruger</a>
+    <a href="Frontpage.html" th:if="${session.currentUser != null}" th:href="@{/logout}">Log ud</a>
+    <a href="#" th:if="${session.currentUser.isAdmin == true}" th:href="@{/#}">Se alle ordrer</a>  <!-- MANGLER PATH OG ENDPOINT HER -->
+    <a href="ViewHistory.html" th:text="${session.currentUser.email}" th:href="@{/ViewHistory}"></a>
+
   </div>
 </div>
+
+
 <!-- overskrifter -->
 <div class="container">
   <h2>Her er alle dine ordrer</h2>
@@ -42,23 +46,25 @@
         <td th:text="${order.orderId}"></td>
         <td th:if="${order.isPaid}">Betalt</td>
         <td th:if="${!order.isPaid}">Ikke Betalt</td>
-        <td th:if="${order.orderPrice}"></td>
+        <td th:text="${order.getOrderPrice()}"></td>
         <td>
           <table class="product-line-table">
             <thead>
             <tr>
               <th>Bottom</th>
               <th>Topping</th>
-              <th>Pris</th>
+              <th>Pris pr cupcake</th>
               <th>Antal</th>
+              <th>Samlet pris for ordrelinje</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="productLine : ${order.productLineList}">
               <td th:text="${productLine.bottomName}"></td>
               <td th:text="${productLine.toppingName}"></td>
-              <td th:text="${productLine.totalPrice}"></td>
+              <td th:text="${productLine.getBottomPrice() + productLine.getToppingPrice()}"></td>
               <td th:text="${productLine.quantity}"></td>
+              <td th:text="${productLine.totalPrice}"></td>
             </tr>
             </tbody>
           </table>

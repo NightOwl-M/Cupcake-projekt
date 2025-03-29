@@ -17,6 +17,7 @@ public class UserController {
         app.post("/login", ctx -> login(ctx, connectionPool));
         app.post("/create-user", ctx -> createUser(ctx, connectionPool));
         app.get("/users", ctx -> getAllUsers(ctx, connectionPool));
+        app.get("logout", ctx -> logout(ctx));
     }
 
     public static void login(Context ctx, ConnectionPool connectionPool) {
@@ -75,5 +76,11 @@ public class UserController {
             ctx.attribute("message", e.getMessage());
             ctx.render("error.html");
         }
+    }
+
+    //TODO tilføj til PR
+    private static void logout(Context ctx) {
+        ctx.req().getSession().invalidate(); //Sletter alt på nuværende Session-objekt
+        ctx.redirect("/"); //redirect i stedet for render, så URL "renses" for /logout
     }
 }

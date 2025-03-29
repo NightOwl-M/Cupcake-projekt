@@ -9,17 +9,14 @@ public class ProductLine {
     private String toppingName;
     private float toppingPrice;
 
-    // Konstruktor
     public ProductLine(int bottomId, String bottomName, float bottomPrice, int toppingId, String toppingName, float toppingPrice, int quantity) {
         this.bottomName = bottomName;
         this.bottomPrice = bottomPrice;
         this.toppingName = toppingName;
         this.toppingPrice = toppingPrice;
         this.quantity = quantity;
-        this.totalPrice = bottomPrice + toppingPrice; // Mit svar på udregning af bottom og topping.
+        this.totalPrice = (bottomPrice + toppingPrice) * quantity;
     }
-
-
 
     public String getBottomName() {
         return bottomName;
