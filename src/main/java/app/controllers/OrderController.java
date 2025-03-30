@@ -20,6 +20,7 @@ public class OrderController {
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
         app.get("/orders", ctx -> ctx.render("orders.html"));
         app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
+        app.get("/ViewHistory2", ctx -> getOrdersByUser(ctx, connectionPool));
     }
 
     public static void createOrder(Context ctx, ConnectionPool connectionPool) {
@@ -103,14 +104,15 @@ public class OrderController {
             ctx.status(401).result("Not authenticated");
             return;
         }
-
         try {
             List<Order> orders = OrderMapper.getOrdersByUser(currentUser.getId(), connectionPool);
-            ctx.json(orders);
+            ctx.attribute("orders", orders);
+            ctx.render("ViewHistory2.html");
         } catch (DatabaseException e) {
             ctx.status(500).result("Error fetching orders: " + e.getMessage());
         }
     }
+
 
     public static void getAllOrders(Context ctx, ConnectionPool connectionPool) {
         try {
