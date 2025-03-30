@@ -20,6 +20,9 @@ public class OrderController {
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
         app.get("/orders", ctx -> ctx.render("orders.html"));
         app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
+        app.get("/pay", ctx -> payOrder(ctx,connectionPool)); //TODO tilføjet
+        app.get("/pay", ctx -> payOrder(ctx,connectionPool)); //TODO tilføjet
+        app.get("/continue-shopping", ctx -> ctx.render("CreateOrder.html")); //TODO tilføjet, OBS på om der fortsættes på currenOrder eller om den laver en ny
     }
 
     public static void createOrder(Context ctx, ConnectionPool connectionPool) {
@@ -32,15 +35,17 @@ public class OrderController {
             List<String> toppingIds = ctx.formParams("topping_ids");
             List<String> quantities = ctx.formParams("quantities");
 
-            // Denne if opdater brugerens balance.
+            /* TODO Skal fjernes, så pay-delen foregår adskilt fra createOrder()
             if (!UserMapper.updateBalance(currentUser.getId(), orderPrice, connectionPool)) {
                 ctx.attribute("message", "Kunne ikke opdatere balance");
                 ctx.render("basket.html");
                 return;
             }
+             */
 
             Order newOrder = OrderMapper.createOrder(currentUser.getId(), orderPrice, connectionPool);
             int orderId = newOrder.getOrderId();
+            ctx.sessionAttribute("currentOrder", newOrder); //TODO tilføjet
 
             // Tilføj produktlinjer
             for (int i = 0; i < productIds.size(); i++) {
@@ -53,6 +58,7 @@ public class OrderController {
                 float totalPrice = (productPrice + toppingPrice) * quantity;
 
                 addProductLine(bottomId, toppingId, orderId, quantity, totalPrice, connectionPool);
+                ctx.render("Basket.html");
             }
 
             // Send succesbesked til bruger
@@ -157,5 +163,12 @@ public class OrderController {
         }
         ctx.attribute("userEmail", user.getEmail());
         ctx.render("ViewHistory.html");
+    }
+
+
+    public static void payOrder(Context ctx, ConnectionPool connectionPool) {
+        //Kalder på pay i UserMapper: trækker orderPrice fra users balance
+        //Sætter currentOrder.isPaid til true
+        //renderer historikside
     }
 }
