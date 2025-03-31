@@ -1,9 +1,9 @@
 package app.persistence;
 
-import java.sql.ResultSet;
 import app.entities.Order;
 import app.entities.ProductLine;
 import app.exceptions.DatabaseException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,21 +148,18 @@ public class OrderMapper {
             return orders;
         }
 
-        public static boolean setOrderStatus(int orderId, boolean isPaid, ConnectionPool connectionPool) {
-        String sql = "UPDATE orders SET paid_status = ? WHERE ?";
+        public static boolean setOrderStatus(int orderId, boolean isPaid, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE orders SET paid_status = ? WHERE order_id = ?";
 
             try (Connection connection = connectionPool.getConnection();
                  PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setBoolean(2, isPaid);
                 ps.setInt(1, orderId);
-                ps.setString(2, isPaid);
 
                 int rowsAffected = ps.executeUpdate();
-                if (rowsAffected == 0) {
-                    throw new DatabaseException("Brugeren kunne ikke oprettes.");
-                }
+                return rowsAffected == 1;
             } catch (SQLException e) {
                 throw new DatabaseException("DB fejl");
             }
         }
-
     }

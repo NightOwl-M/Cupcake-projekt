@@ -183,10 +183,5 @@ public class OrderController {
            ctx.attribute("message", "Error: Something went wrong with the payment");
            ctx.render("Basket.html");
         }
-
-
-        //Kalder på pay i UserMapper: trækker orderPrice fra users balance
-        //Sætter currentOrder.isPaid til true
-        //renderer historikside
     }
 }
