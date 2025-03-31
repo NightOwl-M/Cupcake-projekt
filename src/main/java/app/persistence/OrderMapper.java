@@ -181,4 +181,19 @@ public class OrderMapper {
         }
         return productLineList;
     }
+
+    public static boolean setOrderStatus(int orderId, boolean isPaid, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE orders SET paid_status = ? WHERE order_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setBoolean(2, isPaid);
+            ps.setInt(1, orderId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        } catch (SQLException e) {
+            throw new DatabaseException("DB fejl");
+        }
+    }
 }

@@ -20,6 +20,8 @@ public class OrderController {
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
         app.get("/CreateOrders", ctx -> ctx.render("CreateOrder.html"));
         app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
+        app.get("/pay", ctx -> payOrder(ctx,connectionPool)); //TODO tilføjet
+        app.get("/continue-shopping", ctx -> ctx.render("CreateOrder.html")); //TODO tilføjet, OBS på om der fortsættes på currenOrder eller om den laver en ny
     }
 
     public static void createOrder(Context ctx, ConnectionPool connectionPool) {
@@ -32,12 +34,15 @@ public class OrderController {
             List<String> toppingIds = ctx.formParams("topping_ids");
             List<String> quantities = ctx.formParams("quantities");
 
+            /*  //TODO udkommenteret så payment, først sker når man trykker på "pay-knap"
             // Denne if opdater brugerens balance.
             if (!UserMapper.updateBalance(currentUser.getId(), orderPrice, connectionPool)) {
                 ctx.attribute("message", "Kunne ikke opdatere balance");
                 ctx.render("basket.html");
                 return;
             }
+
+             */
 
             Order newOrder = OrderMapper.createOrder(currentUser.getId(), orderPrice, connectionPool);
             int orderId = newOrder.getOrderId();
@@ -158,4 +163,25 @@ public class OrderController {
         ctx.attribute("userEmail", user.getEmail());
         ctx.render("ViewHistory.html");
     }
+
+    public static void payOrder(Context ctx, ConnectionPool connectionPool) {
+        User currentUser = ctx.sessionAttribute("currentUser");
+        Order currentOrder = ctx.sessionAttribute("currentOrder");
+
+        try {
+            boolean paymentSuccess = UserMapper.pay(currentUser.getId(), currentOrder.getOrderPrice(), connectionPool);
+            if (paymentSuccess) {
+                boolean orderStatusUpdateSuccess = OrderMapper.setOrderStatus(currentOrder.getOrderId(), true, connectionPool);
+                if (orderStatusUpdateSuccess) {
+                    currentOrder.setPaid(true);
+                    ctx.sessionAttribute("currentOrder", currentOrder);
+                    ctx.render("ViewHistory");
+                }
+            }
+        } catch (DatabaseException e) {
+            ctx.attribute("message", "Error: Something went wrong with the payment");
+            ctx.render("Basket.html");
+        }
+    }
+
 }
