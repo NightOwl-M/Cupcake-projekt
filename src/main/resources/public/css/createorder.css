@@ -1,10 +1,56 @@
-.nav-container {
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.header {
+    background-color: #3b1d5e;
+    padding: 20px;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav {
+    background-color: #ff7f50;
+    padding: 10px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-container {
+    display: flex;
     width: 100%;
+    justify-content: space-between;
+    max-width: 1200px;
     padding: 0 40px;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+.user-email {
+    font-size: 20px;
+    color: white;
 }
 
 .nav-link, .cart-link {
@@ -40,6 +86,34 @@
     position: absolute;
     top: -8px;
     right: -8px;
+}
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 40px;
+}
+
+.nav-link, .cart-link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.3s;
+}
+
+.nav-link:hover, .cart-link:hover {
+    opacity: 0.8;
+}
+
+.cart-link {
+    position: relative;
+    padding-right: 10px;
 }
 
 .cupcake-selection-container {
@@ -121,6 +195,18 @@
     color: #333;
 }
 
+@media (max-width: 768px) {
+    .order-header {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .product-info {
+        flex-direction: column;
+        gap: 5px;
+    }
+}
+
 .custom-btn {
     display: block;
     width: 80%;
@@ -139,10 +225,4 @@
 .custom-btn:hover {
     background-color: #45a049;
     transform: scale(1.05);
-}
-
-@media (max-width: 768px) {
-    .input-wrapper {
-        width: 80%;
-    }
 }
