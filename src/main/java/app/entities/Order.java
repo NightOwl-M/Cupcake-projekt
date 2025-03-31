@@ -43,4 +43,8 @@ public class Order {
     public void setPaid(boolean paid) {
         isPaid = paid;
     }
+
+    public List<ProductLine> getProductLineList() {
+        return productLineList;
+    }
 }

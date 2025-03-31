@@ -42,8 +42,8 @@
       </tr>
       </thead>
       <tbody>
-      <td th:text="${currentOrder.orderId}"></td>
-      <td th:text="${currentOrder.getOrderPrice()}"></td>
+      <td th:text="${session.currentOrder.orderId}"></td>
+      <td th:text="${session.currentOrder.getOrderPrice()}"></td>
       <td>
         <table class="product-line-table">
           <thead>
@@ -56,7 +56,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="productLine : ${currentOrder.productLineList}">
+          <tr th:each="productLine : ${session.currentOrder.productLineList}">
             <td th:text="${productLine.bottomName}"></td>
             <td th:text="${productLine.toppingName}"></td>
             <td th:text="${productLine.getBottomPrice() + productLine.getToppingPrice()}"></td>
@@ -71,10 +71,12 @@
   </form>
 </div>
 
+<form method="get">
+<button class="custom-btn" type="submit" th:formaction="@{/continue-shopping}">Shop videre</button>
+</form>
 
 <form method="post">
-  <button class="custom-btn" type="submit" th:formaction="@{/continue-shopping}">Shop videre</button>
-  <button class="custom-btn" type="submit" th:formaction="@{/pay}" th:if="${!currentOrder.isPaid}">Betal</button>
+  <button class="custom-btn" type="submit" th:formaction="@{/pay}" th:if="${!session.currentOrder.isPaid}">Betal</button>   <!-- Sikre at man ikke kan betale flere gange for samme ordre -->
 </form>
 
 

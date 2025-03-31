@@ -1,8 +1,11 @@
 package app.persistence;
 
 import java.sql.ResultSet;
+
+import app.entities.Bottom;
 import app.entities.Order;
 import app.entities.ProductLine;
+import app.entities.Topping;
 import app.exceptions.DatabaseException;
 import java.sql.*;
 import java.util.ArrayList;
@@ -187,13 +190,57 @@ public class OrderMapper {
 
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setBoolean(2, isPaid);
-            ps.setInt(1, orderId);
+            ps.setBoolean(1, isPaid);
+            ps.setInt(2, orderId);
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected == 1;
         } catch (SQLException e) {
             throw new DatabaseException("DB fejl");
         }
+    }
+
+    //TODO Eventuelt smid i en mere passende Mapper
+    public static List<Bottom> getAllBottoms(ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT * FROM bottom";
+        List<Bottom> allBottoms = new ArrayList<>();
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int bottomId = rs.getInt("bottom_id");
+                String bottomName = rs.getString("bottom_name");
+                float bottomPrice = rs.getFloat("bottom_price");
+
+                allBottoms.add(new Bottom(bottomId, bottomName, bottomPrice));
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching all orders: " + e.getMessage());
+        }
+        return allBottoms;
+    }
+
+    //TODO Eventuelt smid i en mere passende Mapper
+    public static List<Topping> getAllToppings(ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT * FROM topping";
+        List<Topping> allToppings = new ArrayList<>();
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int toppingId = rs.getInt("topping_id");
+                String toppingName = rs.getString("topping_name");
+                float toppingPrice = rs.getFloat("topping_price");
+
+                allToppings.add(new Topping(toppingId, toppingName, toppingPrice));
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching all orders: " + e.getMessage());
+        }
+        return allToppings;
     }
 }
