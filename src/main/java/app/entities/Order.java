@@ -39,4 +39,7 @@ public class Order {
     public void setProductLines(List<ProductLine> productLineList) {
         this.productLineList = productLineList;
     }
+
+    public void setPaid(boolean b) {
+    }
 }

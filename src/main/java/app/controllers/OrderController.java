@@ -167,8 +167,27 @@ public class OrderController {
 
 
     public static void payOrder(Context ctx, ConnectionPool connectionPool) {
+        User currentUser = ctx.sessionAttribute("currentUser");
+        Order currentOrder = ctx.sessionAttribute("currentOrder");
+
+
+        try {
+            boolean paymentSuccess = UserMapper.pay(currentUser.getId(), currentOrder.getOrderPrice(), connectionPool);
+            if (paymentSuccess) {
+                boolean orderStatusUpdateSuccess = OrderMapper.setOrderStatus(currentOrder.getOrderId(), true, connectionPool);
+                if (orderStatusUpdateSuccess) {
+                    currentOrder.setPaid(true);
+                    ctx.sessionAttribute("currentOrder", currentOrder);
+                    ctx.render("ViewHistory");
+                }
+            }
+        } catch (DatabaseException e) {
+            ctx.attribute("message", "Error: Something went wrong with the payment");
+            ctx.render("Basket.html");
+        }
         //Kalder på pay i UserMapper: trækker orderPrice fra users balance
         //Sætter currentOrder.isPaid til true
         //renderer historikside
     }
+
 }
