@@ -1,5 +1,7 @@
 package app.controllers;
 
+import app.entities.Bottom;
+import app.entities.Topping;
 import app.entities.User;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
@@ -18,7 +20,8 @@ import java.util.List;
 public class OrderController {
     // I denne addRoutes metode håndterer vi alle "Handelsrelateret funktioner.
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
-        app.get("/CreateOrders", ctx -> ctx.render("CreateOrder.html"));
+       // app.get("/CreateOrders", ctx -> ctx.render("CreateOrder.html"));
+        app.get("/CreateOrders", ctx -> getAllBottomsAndToppings(ctx, connectionPool));
         app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
         app.get("/pay", ctx -> payOrder(ctx,connectionPool)); //TODO tilføjet
         app.get("/continue-shopping", ctx -> ctx.render("CreateOrder.html")); //TODO tilføjet, OBS på om der fortsættes på currenOrder eller om den laver en ny
@@ -99,6 +102,26 @@ public class OrderController {
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Fejl ved indsættelse af produktlinje: " + e.getMessage());
+        }
+    }
+
+    public static void getAllBottomsAndToppings(Context ctx, ConnectionPool connectionPool) {
+        User currentUser = ctx.sessionAttribute("currentUser");
+
+        if (currentUser == null) {
+            ctx.status(401).result("Not authenticated");
+            return;
+        }
+        try {
+            List<Topping> allToppings = OrderMapper.getAllToppings(connectionPool);
+            ctx.attribute("allToppings", allToppings);
+
+            List<Bottom> allBottoms = OrderMapper.getAllBottoms(connectionPool);
+            ctx.attribute("allBottoms", allBottoms);
+
+            ctx.render("CreateOrder.html");
+        } catch (DatabaseException e) {
+            ctx.status(500).result("Error fetching bottoms and toppings: " + e.getMessage());
         }
     }
 
