@@ -9,11 +9,12 @@ package "Entities" {
     - Bottom bottom
     - Topping topping
     + getters();
-    + getTotalPrice();
+    + getPrice();
     }
 
     class Topping {
     - String toppingName
+    - int toppingId
     - float toppingPrice
     + getToppingName();
     + getToppingPrice();
@@ -21,6 +22,7 @@ package "Entities" {
 
     class Bottom {
     - String bottomName
+    - int bottomId
     - float bottomPrice
     + getBottomName();
     + getBottomPrice();
@@ -31,24 +33,29 @@ package "Entities" {
     - String email
     - String password
     - int balance
-    - string role
+    - boolean isAdmin
     + getters();
+    + setters();
     }
     class ProductLine {
     - int orderLineId
     - int quantity
-    - Cupcake cupcake
     - float totalPrice
+    - String bottomName
+    - float bottomPrice
+    - String toppingName
+    - float toppingPrice
     + getters();
     }
 
-    class Order {
+    class Orders {
     - int orderId
-    - User user
-    - List<ProductLine> productList
+    - int userId
+    - List<ProductLine> productLineList
     - float orderPrice
     - boolean isPaid
     + getters();
+    + setters();
     }
 }
 Cupcake *-- Topping
@@ -62,15 +69,20 @@ package "Persistence" {
     + getOrderById();
     + updateOrder();
     + deleteOrder();
+    + getProductLineByOrderId();
+    + setOrderStatus();
     }
 class userMapper {
     + login();
+    + getBalanceByUserId();
+    + pay();
     + createUser();
     + getAllUsers();
+    + updateBalance();
     }
 }
-Order *-- ProductLine
-Order *-- User
+Orders *-- ProductLine
+Orders *-- User
 ProductLine *-- Cupcake
 
 package "Controllers" {
@@ -84,11 +96,14 @@ package "Controllers" {
     class OrderController {
     + addRoutes();
     + createOrder();
+    + getPriceById();
+    + addProductLine();
     + getOrdersByUser();
     + getAllOrders();
     + getOrderById();
-    + updateOrder();
     + deleteOrder();
+    + viewHistory();
+    + payOrder();
     }
 }
 package "Test" {
