@@ -18,7 +18,7 @@ import java.util.List;
 public class OrderController {
     // I denne addRoutes metode håndterer vi alle "Handelsrelateret funktioner.
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
-        app.get("/orders", ctx -> ctx.render("orders.html"));
+        app.get("/CreateOrders", ctx -> ctx.render("CreateOrder.html"));
         app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
     }
 
