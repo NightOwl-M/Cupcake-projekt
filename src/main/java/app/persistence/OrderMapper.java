@@ -148,4 +148,21 @@ public class OrderMapper {
             return orders;
         }
 
+        public static boolean setOrderStatus(int orderId, boolean isPaid, ConnectionPool connectionPool) {
+        String sql = "UPDATE orders SET paid_status = ? WHERE ?";
+
+            try (Connection connection = connectionPool.getConnection();
+                 PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setInt(1, orderId);
+                ps.setString(2, isPaid);
+
+                int rowsAffected = ps.executeUpdate();
+                if (rowsAffected == 0) {
+                    throw new DatabaseException("Brugeren kunne ikke oprettes.");
+                }
+            } catch (SQLException e) {
+                throw new DatabaseException("DB fejl");
+            }
+        }
+
     }

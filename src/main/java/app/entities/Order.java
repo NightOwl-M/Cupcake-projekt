@@ -36,6 +36,10 @@ public class Order {
         return orderPrice;
     }
 
+    public void setPaid(boolean paid) {
+        isPaid = paid;
+    }
+
     public void setProductLines(List<ProductLine> productLineList) {
         this.productLineList = productLineList;
     }
