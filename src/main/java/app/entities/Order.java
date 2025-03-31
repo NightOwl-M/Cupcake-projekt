@@ -16,7 +16,7 @@ public class Order {
         this.isPaid = isPaid;
     }
 
-    public boolean isPaid() {
+    public boolean getIsPaid() {
         return isPaid;
     }
 
@@ -29,14 +29,18 @@ public class Order {
     }
 
     public float getOrderPrice() {
-        this.orderPrice = 0;
+
         for (ProductLine productLine : productLineList) {
             orderPrice += productLine.getTotalPrice();
         }
         return orderPrice;
     }
 
-    public void setProductLines(List<ProductLine> productLineList) {
+    public List<ProductLine> getProductLineList() {
+        return productLineList;
+    }
+
+    public void setProductLines (List <ProductLine> productLineList) {
         this.productLineList = productLineList;
     }
 }

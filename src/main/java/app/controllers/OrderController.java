@@ -20,6 +20,8 @@ public class OrderController {
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
         app.get("/orders", ctx -> ctx.render("orders.html"));
         app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
+        //app.get("/adminorders", ctx -> ctx.render("AdminViewAllOrders.html"));
+        app.get("/adminorders", ctx -> getAllOrdersAdmin(ctx, connectionPool));
     }
 
     public static void createOrder(Context ctx, ConnectionPool connectionPool) {
@@ -94,6 +96,25 @@ public class OrderController {
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException("Fejl ved indsættelse af produktlinje: " + e.getMessage());
+        }
+    }
+
+    //TODO har lavet den her metode. Skal være et PR
+    public static void getAllOrdersAdmin(Context ctx, ConnectionPool connectionPool) {
+        System.out.println("Getting all orders: ");
+        User currentUser = ctx.sessionAttribute("currentUser");
+        /*if (currentUser == null || !currentUser.isAdmin()) {
+            ctx.status(401).result("Not authenticated");
+            return;
+        }*/
+        try {
+            List<Order> orders = OrderMapper.getAllOrders(connectionPool);
+            System.out.println("Received orders:");
+            System.out.println(orders);
+            ctx.attribute("orders", orders);
+            ctx.render("AdminViewAllOrders.html");
+        } catch (DatabaseException e) {
+            ctx.status(500).result("Error fetching all orders: " + e.getMessage());
         }
     }
 
