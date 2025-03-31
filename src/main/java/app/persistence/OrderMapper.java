@@ -105,29 +105,31 @@ public class OrderMapper {
         return newOrder;
     }
 
-
     public static List<Order> getOrdersByUser(int userId, ConnectionPool connectionPool) throws DatabaseException {
-            String sql = "SELECT * FROM orders WHERE user_id = ?";
-            List<Order> orders = new ArrayList<>();
+        String sql = "SELECT * FROM orders WHERE user_id = ?";
+        List<Order> orders = new ArrayList<>();
 
-            try (Connection connection = connectionPool.getConnection();
-                 PreparedStatement ps = connection.prepareStatement(sql)) {
-                ps.setInt(1, userId);
-                ResultSet rs = ps.executeQuery();
 
-                while (rs.next()) {
-                    int orderId = rs.getInt("order_id");
-                    float orderPrice = rs.getFloat("order_price");
-                    boolean isPaid = rs.getBoolean("paid_status");
-                    orders.add(new Order(orderId, userId, orderPrice, isPaid));
-                }
-            } catch (SQLException e) {
-                throw new DatabaseException("Error fetching user orders: " + e.getMessage());
+        try (Connection connection = connectionPool.getConnection(); PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int orderId = rs.getInt("order_id");
+                float orderPrice = rs.getFloat("order_price");
+                boolean isPaid = rs.getBoolean("paid_status");
+                orders.add(new Order(orderId, userId, orderPrice, isPaid));
             }
-            return orders;
+            for (Order order: orders) {
+                order.setProductLines(getProductLineByOrderId(order.getOrderId(), connectionPool));
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching user orders: " + e.getMessage());
         }
+        return orders;
+    }
 
-        public static List<Order> getAllOrders(ConnectionPool connectionPool) throws DatabaseException {
+    public static List<Order> getAllOrders(ConnectionPool connectionPool) throws DatabaseException {
             String sql = "SELECT * FROM orders";
             List<Order> orders = new ArrayList<>();
 
@@ -148,4 +150,35 @@ public class OrderMapper {
             return orders;
         }
 
+    public static List<ProductLine> getProductLineByOrderId(int orderId, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT * FROM orders o \n" +
+                "JOIN productline p ON o.order_id = p.order_id \n" +
+                "JOIN bottom b ON p.bottom_id = b.bottom_id \n" +
+                "JOIN topping t ON p.topping_id = t.topping_id \n" +
+                "WHERE o.order_id = ?";
+        List<ProductLine> productLineList = new ArrayList<>();
+
+        try (Connection connection = connectionPool.getConnection(); PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, orderId);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int bottomId = rs.getInt("bottom_id");
+                String bottomName = rs.getString("bottom_name");
+                float bottomPrice = rs.getFloat("bottom_price");
+                int toppingId = rs.getInt("topping_id");
+                String toppingName = rs.getString("topping_name");
+                float toppingPrice = rs.getFloat("topping_price");
+                int quantity = rs.getInt("quantity");
+
+
+                // Oprettelse af ProductLine: for hver række oprettes et productLine-objekt med disse data.
+                ProductLine productLine = new ProductLine(bottomId, bottomName, bottomPrice, toppingId, toppingName, toppingPrice, quantity);
+                productLineList.add(productLine);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error in getting productlines with orderId = " + orderId, e.getMessage());
+        }
+        return productLineList;
     }
+}

@@ -18,6 +18,15 @@ public class ProductLine {
         this.totalPrice = bottomPrice + toppingPrice; // Mit svar på udregning af bottom og topping.
     }
 
+    public ProductLine(int bottomId, String bottomName, float bottomPrice, int toppingId, String toppingName, float toppingPrice, int quantity) {
+        this.bottomName = bottomName;
+        this.bottomPrice = bottomPrice;
+        this.toppingName = toppingName;
+        this.toppingPrice = toppingPrice;
+        this.quantity = quantity;
+        this.totalPrice = (bottomPrice + toppingPrice) * quantity;
+    }
+
     public String getBottomName() {
         return bottomName;
     }
@@ -38,5 +47,8 @@ public class ProductLine {
         return totalPrice;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
 }
 
