@@ -1,11 +1,13 @@
 package app.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
     private int orderId;
     private int userId;
-    private List<ProductLine> productLineList;
+    private String userEmail; // Tilføjet nyt felt
+    private List<ProductLine> productLineList = new ArrayList<>();
     private float orderPrice;
     private boolean isPaid;
 
@@ -16,10 +18,7 @@ public class Order {
         this.isPaid = isPaid;
     }
 
-    public boolean isPaid() {
-        return isPaid;
-    }
-
+    // Gettere og settere
     public int getOrderId() {
         return orderId;
     }
@@ -28,23 +27,46 @@ public class Order {
         return userId;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
     public float getOrderPrice() {
-        this.orderPrice = 0;
-        for (ProductLine productLine : productLineList) {
-            orderPrice += productLine.getTotalPrice();
+        // Genberegn hvis productLineList er ændret
+        if (productLineList != null && !productLineList.isEmpty()) {
+            orderPrice = 0;
+            for (ProductLine pl : productLineList) {
+                orderPrice += pl.getTotalPrice();
+            }
         }
         return orderPrice;
     }
 
-    public void setProductLines(List<ProductLine> productLineList) {
-        this.productLineList = productLineList;
+    public List<ProductLine> getProductLineList() {
+        return productLineList;
+    }
+
+    public void setProductLines(List<ProductLine> productLines) {
+        this.productLineList = productLines;
+        // Opdater ordrepris ved ændring af produktlinjer
+        getOrderPrice();
+    }
+
+    public void addProductLine(ProductLine productLine) {
+        this.productLineList.add(productLine);
+        // Opdater ordrepris
+        this.orderPrice += productLine.getTotalPrice();
+    }
+
+    public boolean isPaid() {
+        return isPaid;
     }
 
     public void setPaid(boolean paid) {
         isPaid = paid;
-    }
-
-    public List<ProductLine> getProductLineList() {
-        return productLineList;
     }
 }

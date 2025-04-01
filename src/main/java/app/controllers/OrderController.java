@@ -1,12 +1,9 @@
 package app.controllers;
 
-import app.entities.Bottom;
-import app.entities.Topping;
-import app.entities.User;
+import app.entities.*;
 import app.persistence.ConnectionPool;
 import app.persistence.UserMapper;
 import io.javalin.Javalin;
-import app.entities.Order;
 import app.exceptions.DatabaseException;
 import app.persistence.OrderMapper;
 import io.javalin.http.Context;
@@ -27,6 +24,19 @@ public class OrderController {
         app.post("/pay", ctx -> payOrder(ctx,connectionPool));
         app.get("/continue-shopping", ctx -> ctx.render("CreateOrder.html"));
         app.get("/viewhistory2", ctx -> getOrdersByUser(ctx, connectionPool));
+        app.before("/Admin*", ctx -> {
+            User user = ctx.sessionAttribute("currentUser");
+            if (user == null || !user.isAdmin()) {
+                ctx.redirect("/login");
+            }
+        });
+        app.get("/Admin", ctx -> adminView(ctx, connectionPool));
+        app.get("/cartSize", ctx -> {
+            List<ProductLine> productLines = ctx.sessionAttribute("productLinesList");
+            int cartSize = (productLines != null) ? productLines.size() : 0;
+            ctx.json(cartSize); // Returnerer antal varer i kurven som JSON
+        });
+
     }
 
     public static void createOrder(Context ctx, ConnectionPool connectionPool) {
@@ -46,6 +56,8 @@ public class OrderController {
 
             OrderMapper.addProductLine(bottomId, toppingId, orderId, quantity, totalPrice, connectionPool); //Cupcakes gemmes i DB
             currentOrder.setProductLines(OrderMapper.getProductLineByOrderId(currentOrder.getOrderId(), connectionPool)); //Cupcakes tilføjes til ordrens List<ProductLine>
+
+            ctx.sessionAttribute("productLinesList", currentOrder.getProductLineList());
 
             ctx.sessionAttribute("currentOrder", currentOrder);
             ctx.redirect("createorder");
@@ -160,5 +172,36 @@ public class OrderController {
             ctx.render("Basket.html");
         }
     }
+
+    public static void adminView(Context ctx, ConnectionPool connectionPool) {
+        User currentUser = ctx.sessionAttribute("currentUser");
+
+        if (currentUser == null) {
+            ctx.redirect("/login?message=Please login first");
+            return;
+        }
+        if (!currentUser.isAdmin()) {
+            ctx.redirect("/userDashboard?message=Access denied");
+            return;
+        }
+
+        try {
+            List<Order> orders = OrderMapper.getAllOrdersWithUserDetails(connectionPool);
+
+            for (Order order : orders) {
+            }
+
+            ctx.attribute("orders", orders);
+            ctx.attribute("isAdmin", true); // Tilføj specifik admin flag til view
+            ctx.render("Admin.html");
+        } catch (DatabaseException e) {
+            e.printStackTrace(); // Udskriv fejl til konsollen
+            ctx.status(500).result("Error fetching orders: " + e.getMessage());
+        }
+    }
+
+
+
+
 
 }

@@ -274,4 +274,62 @@ public class OrderMapper {
         }
         return allToppings;
     }
+
+    public static List<Order> getAllOrdersWithUserDetails(ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT o.order_id, o.user_id, o.order_price, o.paid_status, " +
+                "u.email AS user_email, " +
+                "p.productline_id, p.quantity, p.total_price, " +
+                "b.bottom_id, b.bottom_name, b.bottom_price, " +
+                "t.topping_id, t.topping_name, t.topping_price " +
+                "FROM orders o " +
+                "JOIN users u ON o.user_id = u.user_id " +
+                "LEFT JOIN productline p ON o.order_id = p.order_id " +
+                "LEFT JOIN bottom b ON p.bottom_id = b.bottom_id " +
+                "LEFT JOIN topping t ON p.topping_id = t.topping_id " +
+                "ORDER BY o.order_id, p.productline_id";
+
+        List<Order> orders = new ArrayList<>();
+        Order currentOrder = null;
+        int lastOrderId = -1;
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int orderId = rs.getInt("order_id");
+
+                if (orderId != lastOrderId) {
+                    currentOrder = new Order(
+                            orderId,
+                            rs.getInt("user_id"),
+                            rs.getFloat("order_price"),
+                            rs.getBoolean("paid_status")
+                    );
+                    currentOrder.setUserEmail(rs.getString("user_email"));
+                    orders.add(currentOrder);
+                    lastOrderId = orderId;
+                }
+
+                if (rs.getObject("productline_id") != null) {
+                    ProductLine pl = new ProductLine(
+                            rs.getInt("bottom_id"),
+                            rs.getString("bottom_name"),
+                            rs.getFloat("bottom_price"),
+                            rs.getInt("topping_id"),
+                            rs.getString("topping_name"),
+                            rs.getFloat("topping_price"),
+                            rs.getInt("quantity")
+                    );
+                    pl.setTotalPrice(rs.getFloat("total_price"));
+                    currentOrder.addProductLine(pl);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error fetching all orders with user details: " + e.getMessage());
+        }
+
+        return orders;
+    }
 }
