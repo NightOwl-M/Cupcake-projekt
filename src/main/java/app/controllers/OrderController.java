@@ -42,6 +42,7 @@ public class OrderController {
             List<String> quantities = ctx.formParams("quantities");
 
 
+            //TODO ordrerpris skal først sætte ved pay måske
             if (currentOrder == null) {
                 currentOrder = OrderMapper.createOrder(currentUser.getId(), 0, connectionPool);
                 ctx.sessionAttribute("currentOrder", currentOrder);
@@ -49,7 +50,7 @@ public class OrderController {
             int orderId = currentOrder.getOrderId();
 
 
-            // Tilføj produktlinjer
+            //TODO cupcakes gemmes ikke i DB
             for (int i = 0; i < productIds.size(); i++) {
                 int bottomId = Integer.parseInt(productIds.get(i));
                 Integer toppingId = toppingIds.get(i).isEmpty() ? null : Integer.parseInt(toppingIds.get(i));
