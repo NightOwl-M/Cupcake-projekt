@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olsker Cupcakes</title>
+    <link href="../public/css/viewhistory2.css" th:href="@{/css/viewhistory2.css}" rel="stylesheet"/>
+    <link href="../public/css/frontpage.css" th:href="@{/css/frontpage.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="header">
+    <!-- Logo billede -->
+    <img alt="logo" src="../../public/images/logoMedSkrift.png" th:src="@{/images/logoMedSkrift.png}"/>
+</div>
+
+
+<!-- Navigationsmenu -->
+<div class="nav">
+    <div class="nav-container">
+        <a href="Frontpage.html" th:if="${session.currentUser != null}" th:href="@{/logout}">Log ud</a>
+        <a href="#" th:if="${session.currentUser.isAdmin == true}" th:href="@{/#}">Se alle ordrer</a>  <!-- MANGLER PATH OG ENDPOINT HER -->
+        <a href="ViewHistory2.html" th:text="${session.currentUser.email}" th:href="@{/ViewHistory2}"></a>
+
+
+    </div>
+</div>
+
+
+
+
+<!-- overskrifter -->
+<div class="container">
+    <h2>Her er alle dine ordrer</h2>
+</div>
+
+
+
+
+<div class="all-order-table">
+    <form class="generic-form" method="get">
+        <table class="order-table">
+            <thead>
+            <tr>
+                <th>Ordrenummer</th>
+                <th>Status</th>
+                <th>Pris</th>
+                <th>Produkter</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.orderId}"></td>
+                <td th:if="${order.isPaid}">Betalt</td>
+                <td th:if="${!order.isPaid}">Ikke Betalt</td>
+                <td th:text="${order.getOrderPrice()}"></td>
+                <td>
+                    <table class="product-line-table">
+                        <thead>
+                        <tr>
+                            <th>Bottom</th>
+                            <th>Topping</th>
+                            <th>Pris pr cupcake</th>
+                            <th>Antal</th>
+                            <th>Samlet pris for ordrelinje</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="productLine : ${order.productLineList}">
+                            <td th:text="${productLine.bottomName}"></td>
+                            <td th:text="${productLine.toppingName}"></td>
+                            <td th:text="${productLine.getBottomPrice() + productLine.getToppingPrice()}"></td>
+                            <td th:text="${productLine.quantity}"></td>
+                            <td th:text="${productLine.totalPrice}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+
+<div class="footer">
+    <!-- Logo billede -->
+    <img alt="logo" src="../../public/images/cupcakes1.png" th:src="@{/images/cupcakes1.png}"/>
+</div>
+</body>
+</html>
