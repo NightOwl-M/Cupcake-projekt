@@ -22,8 +22,6 @@ public class OrderController {
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
       app.get("/CreateOrders", ctx -> ctx.render("CreateOrder.html"));
         app.get("/createorder", ctx -> getAllBottomsAndToppings(ctx, connectionPool));
-       // app.post("/addToBasket", ctx -> ctx.render("CreateOrder.html"));
-        //app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
         app.get("/basket", ctx -> ctx.render("Basket.html"));
         app.post("/addToBasket", ctx -> createOrder(ctx,connectionPool));
         app.post("/pay", ctx -> payOrder(ctx,connectionPool));
@@ -84,13 +82,13 @@ public class OrderController {
             currentOrder.setProductLines(OrderMapper.getProductLineByOrderId(currentOrder.getOrderId(), connectionPool));
             ctx.sessionAttribute("currentOrder", currentOrder);
 
-
-            // Send succesbesked til bruger
-            ctx.status(200).result("Order created and added to cart.");
+            ctx.redirect("createorder");
         } catch (NumberFormatException e) {
-            ctx.status(400).result("Invalid input for order creation.");
+            ctx.sessionAttribute("errorMessage", "Invalid input for order creation.");
+            ctx.redirect("createorder");
         } catch (DatabaseException e) {
-            ctx.status(500).result("Error creating order: " + e.getMessage());
+            ctx.sessionAttribute("errorMessage", "Error creating order: " + e.getMessage());
+            ctx.redirect("createorder");
         }
     }
 
@@ -238,7 +236,7 @@ public class OrderController {
                 if (orderStatusUpdateSuccess) {
                     currentOrder.setPaid(true);
                     ctx.sessionAttribute("currentOrder", currentOrder);
-                    ctx.render("ViewHistory");
+                    ctx.render("ViewHistory2");
                 }
             }
         } catch (DatabaseException e) {
