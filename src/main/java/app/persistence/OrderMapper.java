@@ -200,6 +200,37 @@ public class OrderMapper {
         }
     }
 
+    public static void addProductLine(int bottomId, Integer toppingId, int orderId, int quantity, float totalPrice, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "INSERT INTO productline (bottom_id, topping_id, order_id, quantity, total_price) VALUES (?, ?, ?, ?, ?)";
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, bottomId);
+            ps.setObject(2, toppingId);
+            ps.setInt(3, orderId);
+            ps.setInt(4, quantity);
+            ps.setFloat(5, totalPrice);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved indsættelse af produktlinje: " + e.getMessage());
+        }
+    }
+
+    public static float getPriceById(int id, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT price FROM bottom WHERE bottom_id = ?"; // Juster for topping, hvis nødvendigt
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getFloat("price");
+            } else {
+                throw new DatabaseException("Produkt ikke fundet med ID: " + id);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved hentning af pris: " + e.getMessage());
+        }
+    }
+
     //TODO Eventuelt smid i en mere passende Mapper
     public static List<Bottom> getAllBottoms(ConnectionPool connectionPool) throws DatabaseException {
         String sql = "SELECT * FROM bottom";
