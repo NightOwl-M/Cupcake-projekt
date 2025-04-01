@@ -9,31 +9,24 @@
 </head>
 <body>
 <div class="header">
-  <!-- Logo billede -->
   <img alt="logo" src="../../public/images/logoMedSkrift.png" th:src="@{/images/logoMedSkrift.png}"/>
 </div>
 
-
-<!-- Navigationsmenu -->
 <div class="nav">
   <div class="nav-container">
     <a th:if="${session.currentUser != null}" th:href="@{/logout}">Log ud</a>
     <a th:if="${session.currentUser.isAdmin == true}" th:href="@{/#}">Se alle ordrer</a>
-    <!-- MANGLER PATH OG ENDPOINT HER -->
     <a th:text="${session.currentUser.email}" th:href="@{/ViewHistory2}"></a>
   </div>
 </div>
 
-
-<!-- overskrifter -->
 <div class="container">
   <h2>Indkøbskurv</h2>
 </div>
 
-
 <div class="all-order-table">
   <form class="generic-form" method="get">
-    <table class="order-table">
+    <table class="order-table" th:if="${session.currentOrder != null}">
       <thead>
       <tr>
         <th>Ordrenummer</th>
@@ -42,46 +35,47 @@
       </tr>
       </thead>
       <tbody>
-      <td th:text="${session.currentOrder.orderId}"></td>
-      <td th:text="${session.currentOrder.getOrderPrice()}"></td>
-      <td>
-        <table class="product-line-table">
-          <thead>
-          <tr>
-            <th>Bottom</th>
-            <th>Topping</th>
-            <th>Pris pr cupcake</th>
-            <th>Antal</th>
-            <th>Samlet pris for ordrelinje</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="productLine : ${session.currentOrder.productLineList}">
-            <td th:text="${productLine.bottomName}"></td>
-            <td th:text="${productLine.toppingName}"></td>
-            <td th:text="${productLine.getBottomPrice() + productLine.getToppingPrice()}"></td>
-            <td th:text="${productLine.quantity}"></td>
-            <td th:text="${productLine.totalPrice}"></td>
-          </tr>
-          </tbody>
-        </table>
-      </td>
+      <tr>
+        <td th:text="${session.currentOrder.orderId}"></td>
+        <td th:text="${session.currentOrder.getOrderPrice()}"></td>
+        <td>
+          <table class="product-line-table">
+            <thead>
+            <tr>
+              <th>Bottom</th>
+              <th>Topping</th>
+              <th>Pris pr cupcake</th>
+              <th>Antal</th>
+              <th>Samlet pris for ordrelinje</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="productLine : ${session.currentOrder.productLineList}">
+              <td th:text="${productLine.bottomName}"></td>
+              <td th:text="${productLine.toppingName}"></td>
+              <td th:text="${productLine.getBottomPrice() + productLine.getToppingPrice()}"></td>
+              <td th:text="${productLine.quantity}"></td>
+              <td th:text="${productLine.totalPrice}"></td>
+            </tr>
+            </tbody>
+          </table>
+        </td>
+      </tr>
       </tbody>
     </table>
+    <p th:unless="${session.currentOrder != null}">Din kurv er tom.</p>
   </form>
 </div>
 
 <form method="get">
-<button class="custom-btn" type="submit" th:formaction="@{/continue-shopping}">Shop videre</button>
+  <button class="custom-btn" type="submit" th:formaction="@{/continue-shopping}">Shop videre</button>
 </form>
 
-<form method="post">
-  <button class="custom-btn" type="submit" th:formaction="@{/pay}" th:if="${!session.currentOrder.isPaid}">Betal</button>   <!-- Sikre at man ikke kan betale flere gange for samme ordre -->
+<form method="post" th:if="${session.currentOrder != null}">
+  <button class="custom-btn" type="submit" th:formaction="@{/pay}" th:if="${!session.currentOrder.isPaid}">Betal</button>
 </form>
-
 
 <div class="footer">
-  <!-- Logo billede -->
   <img alt="logo" src="../../public/images/cupcakes1.png" th:src="@{/images/cupcakes1.png}"/>
 </div>
 </body>
