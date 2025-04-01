@@ -74,9 +74,11 @@
     </button>
   </form>
 </div>
+
 <script>
+  // Bekræft logout
   document.getElementById('logout-link').addEventListener('click', function(e) {
-    if (!confirm('Are you sure you wont to logout?')) {
+    if (!confirm('Er du sikker på, at du vil logge ud?')) {
       e.preventDefault(); // Annullerer logout hvis brugeren klikker "Annuller"
     }
   });
