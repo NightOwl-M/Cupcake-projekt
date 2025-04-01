@@ -31,3 +31,23 @@
     align-items: center;
     justify-content: center;
 }
+.custom-btn {
+    display: block;
+    width: 80%;
+    max-width: 300px;
+    margin: 30px auto;
+    padding: 15px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-btn:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
