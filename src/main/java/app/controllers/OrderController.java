@@ -22,11 +22,12 @@ public class OrderController {
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
      //   app.get("/CreateOrders", ctx -> ctx.render("CreateOrder.html"));
         app.get("/createorder", ctx -> getAllBottomsAndToppings(ctx, connectionPool));
-        app.post("/addToBasket", ctx -> createOrder(ctx,connectionPool));
-        app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
+        app.post("/addToBasket", ctx -> ctx.render("CreateOrder.html"));
+       // app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
         app.get("/basket", ctx -> ctx.render("Basket.html"));
         app.post("/pay", ctx -> payOrder(ctx,connectionPool));
         app.get("/continue-shopping", ctx -> ctx.render("CreateOrder.html"));
+        app.get("/viewhistory2", ctx -> getOrdersByUser(ctx, connectionPool));
     }
 
     //TODO OBS på om der fortsættes på currentOrder eller om den laver en ny
@@ -139,7 +140,21 @@ public class OrderController {
             ctx.status(401).result("Not authenticated");
             return;
         }
-
+        try {
+            List<Order> orders = OrderMapper.getOrdersByUser(currentUser.getId(), connectionPool);
+            ctx.attribute("orders", orders);
+            ctx.render("ViewHistory2.html");
+        } catch (DatabaseException e) {
+            ctx.status(500).result("Error fetching orders: " + e.getMessage());
+        }
+    }
+/*
+    public static void getOrdersByUser(Context ctx, ConnectionPool connectionPool) {
+        User currentUser = ctx.sessionAttribute("currentUser");
+        if (currentUser == null) {
+            ctx.status(401).result("Not authenticated");
+            return;
+        }
         try {
             List<Order> orders = OrderMapper.getOrdersByUser(currentUser.getId(), connectionPool);
             ctx.json(orders);
@@ -147,6 +162,8 @@ public class OrderController {
             ctx.status(500).result("Error fetching orders: " + e.getMessage());
         }
     }
+
+ */
 
     public static void getAllOrders(Context ctx, ConnectionPool connectionPool) {
         try {

@@ -32,26 +32,26 @@
 
 <div class="container">
   <!-- Sektion for tidligere bestillinger -->
-  <div class="order-history" th:if="${not #lists.isEmpty(previousOrders)}">
+  <div class="order-history" th:if="${not #lists.isEmpty(orders)}">
     <h2>Order view</h2>
     <div class="order-list">
-      <div class="order-item" th:each="order : ${previousOrders}">
+      <div class="order-item" th:each="order : ${orders}">
         <div class="order-header">
-          <span class="order-date" th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></span>
-          <span class="order-total" th:text="'Total: ' + ${order.totalPrice} + ' kr'"></span>
-        </div>
-        <div class="product-line" th:each="productLine : ${order.productLines}">
-          <div class="product-info">
-            <span class="product-name" th:text="${productLine.bottom.name} + ' + ' + ${productLine.topping.name}"></span>
-            <span class="product-quantity" th:text="${productLine.quantity} + ' stk'"></span>
+          <!--   <span class="order-date" th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></span> -->
+            <span class="order-total" th:text="'Total: ' + ${order.totalPrice} + ' kr'"></span>
           </div>
-          <div class="product-price" th:text="${productLine.price} + ' kr'"></div>
+          <div class="product-line" th:each="productLine : ${order.productLines}">
+            <div class="product-info">
+              <span class="product-name" th:text="${productLine.bottom.name} + ' + ' + ${productLine.topping.name}"></span>
+              <span class="product-quantity" th:text="${productLine.quantity} + ' stk'"></span>
+            </div>
+            <div class="product-price" th:text="${productLine.price} + ' kr'"></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Eksisterende form til nye bestillinger -->
+    <!-- Eksisterende form til nye bestillinger -->
   <form method="post">
     <div class="cupcake-selection-container">
       <div class="input-wrapper">
