@@ -33,12 +33,19 @@ public class UserController {
         try {
             User user = UserMapper.login(email, password, connectionPool);
             ctx.sessionAttribute("currentUser", user);
-            ctx.redirect("/viewhistory2");
+
+            // Tjekker om brugeren er admin
+            if (user.isAdmin()) {
+                ctx.redirect("/Admin"); // Admin side
+            } else {
+                ctx.redirect("/viewhistory2"); // Normal brugerhistorik
+            }
         } catch (DatabaseException e) {
             ctx.attribute("message", e.getMessage());
             ctx.render("LoginPage.html");
         }
     }
+
 
     public static void createUser(Context ctx, ConnectionPool connectionPool) {
         String email = ctx.formParam("user_email");

@@ -8,6 +8,7 @@
   <link href="../public/css/createorder.css" th:href="@{/css/createorder.css}" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
 
 <div class="header">
@@ -25,7 +26,8 @@
       <a th:href="@{/basket}" class="cart-link">
         <i class="fas fa-shopping-cart"></i>
         <span class="cart-text"></span>
-        <span class="cart-count" th:text="${not #lists.isEmpty(productLinesList) ? #lists.size(productLinesList) : 0}"></span>
+        <!-- Hvis productLinesList ikke er tom, vis antallet af produktlinjer, ellers vis 0 -->
+        <span class="cart-count" th:text="${session.productLinesList != null ? session.productLinesList.size() : 0}"></span>
       </a>
     </div>
   </div>
@@ -76,10 +78,9 @@
 </div>
 
 <script>
-  // Bekræft logout
   document.getElementById('logout-link').addEventListener('click', function(e) {
     if (!confirm('Er du sikker på, at du vil logge ud?')) {
-      e.preventDefault(); // Annullerer logout hvis brugeren klikker "Annuller"
+      e.preventDefault();
     }
   });
 </script>
