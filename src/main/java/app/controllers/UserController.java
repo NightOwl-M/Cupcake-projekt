@@ -36,7 +36,7 @@ public class UserController {
         try {
             User user = UserMapper.login(email, password, connectionPool);
             ctx.sessionAttribute("currentUser", user);
-            ctx.redirect("/viewhistory");
+            ctx.redirect("/viewhistory2");
         } catch (DatabaseException e) {
             ctx.attribute("message", e.getMessage());
             ctx.render("LoginPage.html");

@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Olsker Cupcakes</title>
-  <link href="../public/css/basket.css" th:href="@{/css/basket.css}" rel="stylesheet"/>
   <link href="../public/css/frontpage.css" th:href="@{/css/frontpage.css}" rel="stylesheet"/>
+  <link href="../public/css/basket.css" th:href="@{/css/basket.css}" rel="stylesheet"/>
 </head>
 <body>
 <div class="header">
@@ -14,69 +14,63 @@
 
 <div class="nav">
   <div class="nav-container">
-    <a th:if="${session.currentUser != null}" th:href="@{/logout}">Log ud</a>
-    <a th:if="${session.currentUser.isAdmin == true}" th:href="@{/#}">Se alle ordrer</a>
-    <a th:text="${session.currentUser.email}" th:href="@{/ViewHistory2}"></a>
+    <div class="nav-left">
+      <a th:href="@{/viewhistory2}" th:text="${session.currentUser.email}"></a>
+      <a href="/logout" class="nav-link" id="logout-link">Logout</a>
+    </div>
+    <div class="nav-right">
+    </div>
   </div>
 </div>
 
 <div class="container">
-  <h2>Indkøbskurv</h2>
+  <h2>Your cart</h2>
+
+  <div class="basket-container" th:if="${session.currentOrder != null}">
+    <div class="order-summary">
+      <div class="order-header">
+        <span class="order-id" th:text="'Ordre #' + ${session.currentOrder.orderId}"></span>
+        <span class="order-total" th:text="'Total: ' + ${session.currentOrder.getOrderPrice()} + ' kr'"></span>
+      </div>
+
+      <div class="product-list">
+        <div class="product-item" th:each="productLine : ${session.currentOrder.productLineList}">
+          <div class="product-details">
+            <span class="product-name" th:text="${productLine.bottomName} + ' + ' + ${productLine.toppingName}"></span>
+            <span class="product-quantity" th:text="${productLine.quantity} + ' stk'"></span>
+          </div>
+          <div class="product-price" th:text="${productLine.totalPrice} + ' kr'"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <form method="get">
+        <button class="custom-btn continue-btn" type="submit" th:formaction="@{/createorder}">Edit order</button>
+      </form>
+
+      <form method="post" th:if="${!session.currentOrder.isPaid}">
+        <button class="custom-btn pay-btn" type="submit" th:formaction="@{/pay}">Pay</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="empty-cart" th:unless="${session.currentOrder != null}">
+    <p>Din kurv er tom.</p>
+    <form method="get">
+      <button class="custom-btn" type="submit" th:formaction="@{/createorder}">Shop now</button>
+    </form>
+  </div>
 </div>
 
-<div class="all-order-table">
-  <form class="generic-form" method="get">
-    <table class="order-table" th:if="${session.currentOrder != null}">
-      <thead>
-      <tr>
-        <th>Ordrenummer</th>
-        <th>Pris i alt</th>
-        <th>Produkter</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td th:text="${session.currentOrder.orderId}"></td>
-        <td th:text="${session.currentOrder.getOrderPrice()}"></td>
-        <td>
-          <table class="product-line-table">
-            <thead>
-            <tr>
-              <th>Bottom</th>
-              <th>Topping</th>
-              <th>Pris pr cupcake</th>
-              <th>Antal</th>
-              <th>Samlet pris for ordrelinje</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="productLine : ${session.currentOrder.productLineList}">
-              <td th:text="${productLine.bottomName}"></td>
-              <td th:text="${productLine.toppingName}"></td>
-              <td th:text="${productLine.getBottomPrice() + productLine.getToppingPrice()}"></td>
-              <td th:text="${productLine.quantity}"></td>
-              <td th:text="${productLine.totalPrice}"></td>
-            </tr>
-            </tbody>
-          </table>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-    <p th:unless="${session.currentOrder != null}">Din kurv er tom.</p>
-  </form>
-</div>
+<div class="footer"></div>
 
-<form method="get">
-  <button class="custom-btn" type="submit" th:formaction="@{/createorder}">Shop videre</button>
-</form>
-
-<form method="post" th:if="${session.currentOrder != null}">
-  <button class="custom-btn" type="submit" th:formaction="@{/pay}" th:if="${!session.currentOrder.isPaid}">Betal</button>
-</form>
-
-<div class="footer">
-  <img alt="logo" src="../../public/images/cupcakes1.png" th:src="@{/images/cupcakes1.png}"/>
-</div>
+<script>
+  document.getElementById('logout-link').addEventListener('click', function(e) {
+    if (!confirm('Er du sikker på at du vil logge ud?')) {
+      e.preventDefault();
+    }
+  });
+</script>
 </body>
 </html>

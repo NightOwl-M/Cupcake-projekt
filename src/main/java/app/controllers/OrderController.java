@@ -209,7 +209,7 @@ public class OrderController {
             return;
         }
         ctx.attribute("userEmail", user.getEmail());
-        ctx.render("ViewHistory.html");
+        ctx.render("ViewHistory2.html");
     }
 
     public static void payOrder(Context ctx, ConnectionPool connectionPool) {
