@@ -40,8 +40,8 @@
           <select id="topping" name="topping" class="styled-select">
             <option value="" disabled selected>Vælg topping</option>
             <option th:each="topping : ${allToppings}"
-                    th:value="${topping.id}"
-                    th:text="${topping.toppingname}">
+                    th:value="${topping.toppingId}"
+                    th:text="${topping.toppingName}">
             </option>
           </select>
         </div>
@@ -53,8 +53,8 @@
           <select id="bottom" name="bottom" class="styled-select">
             <option value="" disabled selected>Vælg bund</option>
             <option th:each="bottom : ${allBottoms}"
-                    th:value="${bottom.id}"
-                    th:text="${bottom.bottomname}">
+                    th:value="${bottom.bottomId}"
+                    th:text="${bottom.bottomName}">
             </option>
           </select>
         </div>
@@ -69,7 +69,7 @@
       </div>
     </div>
 
-    <button class="custom-btn" type="submit" formaction="/eventplanner/create">
+    <button class="custom-btn" type="submit" formaction="/addToBasket">
       Add to basket
     </button>
   </form>
