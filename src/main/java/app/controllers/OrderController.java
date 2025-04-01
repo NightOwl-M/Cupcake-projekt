@@ -20,11 +20,12 @@ import java.util.List;
 public class OrderController {
     // I denne addRoutes metode håndterer vi alle "Handelsrelateret funktioner.
     public static void addRoutes(Javalin app, ConnectionPool connectionPool) {
-     //   app.get("/CreateOrders", ctx -> ctx.render("CreateOrder.html"));
+      app.get("/CreateOrders", ctx -> ctx.render("CreateOrder.html"));
         app.get("/createorder", ctx -> getAllBottomsAndToppings(ctx, connectionPool));
-        app.post("/addToBasket", ctx -> ctx.render("CreateOrder.html"));
-       // app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
+       // app.post("/addToBasket", ctx -> ctx.render("CreateOrder.html"));
+        //app.get("/viewhistory", ctx -> viewHistory(ctx, connectionPool));
         app.get("/basket", ctx -> ctx.render("Basket.html"));
+        app.post("/addToBasket", ctx -> createOrder(ctx,connectionPool));
         app.post("/pay", ctx -> payOrder(ctx,connectionPool));
         app.get("/continue-shopping", ctx -> ctx.render("CreateOrder.html"));
         app.get("/viewhistory2", ctx -> getOrdersByUser(ctx, connectionPool));
@@ -36,11 +37,14 @@ public class OrderController {
         Order currentOrder = ctx.sessionAttribute("currentOrder");
 
         try {
+            /*
             // Hent data fra form
             // float orderPrice = Float.parseFloat(ctx.formParam("total_price"));
             List<String> productIds = ctx.formParams("product_ids");
             List<String> toppingIds = ctx.formParams("topping_ids");
             List<String> quantities = ctx.formParams("quantities");
+             */
+
 
 
             //TODO ordrerpris skal først sætte ved pay måske
@@ -51,7 +55,16 @@ public class OrderController {
             int orderId = currentOrder.getOrderId();
 
 
+            float totalPrice = 0; //TODO
+            int toppingId = Integer.parseInt(ctx.formParam("topping"));
+            int bottomId = Integer.parseInt(ctx.formParam("bottom"));
+            int quantity = Integer.parseInt(ctx.formParam("quantity"));
+
+            System.out.println("TEST");
+            addProductLine(bottomId, toppingId, orderId, quantity, totalPrice, connectionPool);
+            System.out.println("TEST:" + bottomId + toppingId + quantity + totalPrice);
             //TODO cupcakes gemmes ikke i DB
+            /*
             for (int i = 0; i < productIds.size(); i++) {
                 int bottomId = Integer.parseInt(productIds.get(i));
                 Integer toppingId = toppingIds.get(i).isEmpty() ? null : Integer.parseInt(toppingIds.get(i));
@@ -61,10 +74,12 @@ public class OrderController {
                 float toppingPrice = toppingId != null ? getPriceById(toppingId, connectionPool) : 0;
                 float totalPrice = (productPrice + toppingPrice) * quantity;
 
-                System.out.println(bottomId + toppingId + quantity + productPrice + toppingPrice + totalPrice);
+                System.out.println("TEST:" + bottomId + toppingId + quantity + productPrice + toppingPrice + totalPrice);
 
                 addProductLine(bottomId, toppingId, orderId, quantity, totalPrice, connectionPool);
             }
+
+             */
 
             currentOrder.setProductLines(OrderMapper.getProductLineByOrderId(currentOrder.getOrderId(), connectionPool));
             ctx.sessionAttribute("currentOrder", currentOrder);
