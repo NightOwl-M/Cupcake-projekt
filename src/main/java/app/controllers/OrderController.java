@@ -161,22 +161,6 @@ public class OrderController {
             ctx.status(500).result("Error fetching orders: " + e.getMessage());
         }
     }
-/*
-    public static void getOrdersByUser(Context ctx, ConnectionPool connectionPool) {
-        User currentUser = ctx.sessionAttribute("currentUser");
-        if (currentUser == null) {
-            ctx.status(401).result("Not authenticated");
-            return;
-        }
-        try {
-            List<Order> orders = OrderMapper.getOrdersByUser(currentUser.getId(), connectionPool);
-            ctx.json(orders);
-        } catch (DatabaseException e) {
-            ctx.status(500).result("Error fetching orders: " + e.getMessage());
-        }
-    }
-
- */
 
     public static void getAllOrders(Context ctx, ConnectionPool connectionPool) {
         try {
@@ -222,7 +206,7 @@ public class OrderController {
             return;
         }
         ctx.attribute("userEmail", user.getEmail());
-        ctx.render("ViewHistory2.html");
+        ctx.render("viewhistory2.html");
     }
 
     public static void payOrder(Context ctx, ConnectionPool connectionPool) {
@@ -235,8 +219,8 @@ public class OrderController {
                 boolean orderStatusUpdateSuccess = OrderMapper.setOrderStatus(currentOrder.getOrderId(), true, connectionPool);
                 if (orderStatusUpdateSuccess) {
                     currentOrder.setPaid(true);
-                    ctx.sessionAttribute("currentOrder", currentOrder);
-                    ctx.render("ViewHistory2");
+                    ctx.sessionAttribute("currentOrder", null); //ordre sættes til null, så man ikke kan tilføje mere til en betalt ordre
+                    ctx.redirect("viewhistory2");
                 }
             }
         } catch (DatabaseException e) {
