@@ -18,13 +18,12 @@
   <div class="nav-container">
     <div class="nav-left">
       <a th:href="@{/viewhistory}" th:text="${session.currentUser.email}"></a>
-      <!-- Opdateret logout link -->
       <a href="/logout" class="nav-link" id="logout-link">Logout</a>
     </div>
     <div class="nav-right">
-      <a href="#" class="cart-link">
-        <i class="fas fa-shopping-cart"></i>
-        <span class="cart-text">Kurv</span>
+      <a th:href="@{/basket}" class="cart-link">
+      <i class="fas fa-shopping-cart"></i>
+        <span class="cart-text"></span>
         <span class="cart-count" th:text="${not #lists.isEmpty(productLinesList) ? #lists.size(productLinesList) : 0}"></span>
       </a>
     </div>
