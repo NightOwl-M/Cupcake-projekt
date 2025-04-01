@@ -29,60 +29,27 @@ public class OrderController {
         app.get("/viewhistory2", ctx -> getOrdersByUser(ctx, connectionPool));
     }
 
-    //TODO OBS på om der fortsættes på currentOrder eller om den laver en ny
     public static void createOrder(Context ctx, ConnectionPool connectionPool) {
         User currentUser = ctx.sessionAttribute("currentUser");
         Order currentOrder = ctx.sessionAttribute("currentOrder");
 
         try {
-            /*
-            // Hent data fra form
-            // float orderPrice = Float.parseFloat(ctx.formParam("total_price"));
-            List<String> productIds = ctx.formParams("product_ids");
-            List<String> toppingIds = ctx.formParams("topping_ids");
-            List<String> quantities = ctx.formParams("quantities");
-             */
-
-
-
-            //TODO ordrerpris skal først sætte ved pay måske
             if (currentOrder == null) {
                 currentOrder = OrderMapper.createOrder(currentUser.getId(), 0, connectionPool);
                 ctx.sessionAttribute("currentOrder", currentOrder);
             }
             int orderId = currentOrder.getOrderId();
-
-
-            float totalPrice = 0; //TODO
+            float totalPrice = 0;
             int toppingId = Integer.parseInt(ctx.formParam("topping"));
             int bottomId = Integer.parseInt(ctx.formParam("bottom"));
             int quantity = Integer.parseInt(ctx.formParam("quantity"));
 
-            System.out.println("TEST");
-            addProductLine(bottomId, toppingId, orderId, quantity, totalPrice, connectionPool);
-            System.out.println("TEST:" + bottomId + toppingId + quantity + totalPrice);
-            //TODO cupcakes gemmes ikke i DB
-            /*
-            for (int i = 0; i < productIds.size(); i++) {
-                int bottomId = Integer.parseInt(productIds.get(i));
-                Integer toppingId = toppingIds.get(i).isEmpty() ? null : Integer.parseInt(toppingIds.get(i));
-                int quantity = Integer.parseInt(quantities.get(i));
+            OrderMapper.addProductLine(bottomId, toppingId, orderId, quantity, totalPrice, connectionPool); //Cupcakes gemmes i DB
+            currentOrder.setProductLines(OrderMapper.getProductLineByOrderId(currentOrder.getOrderId(), connectionPool)); //Cupcakes tilføjes til ordrens List<ProductLine>
 
-                float productPrice = getPriceById(bottomId, connectionPool);
-                float toppingPrice = toppingId != null ? getPriceById(toppingId, connectionPool) : 0;
-                float totalPrice = (productPrice + toppingPrice) * quantity;
-
-                System.out.println("TEST:" + bottomId + toppingId + quantity + productPrice + toppingPrice + totalPrice);
-
-                addProductLine(bottomId, toppingId, orderId, quantity, totalPrice, connectionPool);
-            }
-
-             */
-
-            currentOrder.setProductLines(OrderMapper.getProductLineByOrderId(currentOrder.getOrderId(), connectionPool));
             ctx.sessionAttribute("currentOrder", currentOrder);
-
             ctx.redirect("createorder");
+
         } catch (NumberFormatException e) {
             ctx.sessionAttribute("errorMessage", "Invalid input for order creation.");
             ctx.redirect("createorder");
@@ -109,41 +76,6 @@ public class OrderController {
             ctx.render("CreateOrder.html");
         } catch (DatabaseException e) {
             ctx.status(500).result("Error fetching bottoms and toppings: " + e.getMessage());
-        }
-    }
-
-    //TODO ryk til Mapper
-    // metode til at hente pris for bund og topping
-    public static float getPriceById(int id, ConnectionPool connectionPool) throws DatabaseException {
-        String sql = "SELECT price FROM bottom WHERE bottom_id = ?"; // Juster for topping, hvis nødvendigt
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getFloat("price");
-            } else {
-                throw new DatabaseException("Produkt ikke fundet med ID: " + id);
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException("Fejl ved hentning af pris: " + e.getMessage());
-        }
-    }
-
-    //TODO ryk til Mapper
-    // produktlinje til databasen
-    public static void addProductLine(int bottomId, Integer toppingId, int orderId, int quantity, float totalPrice, ConnectionPool connectionPool) throws DatabaseException {
-        String sql = "INSERT INTO productline (bottom_id, topping_id, order_id, quantity, total_price) VALUES (?, ?, ?, ?, ?)";
-        try (Connection connection = connectionPool.getConnection();
-             PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setInt(1, bottomId);
-            ps.setObject(2, toppingId);
-            ps.setInt(3, orderId);
-            ps.setInt(4, quantity);
-            ps.setFloat(5, totalPrice);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw new DatabaseException("Fejl ved indsættelse af produktlinje: " + e.getMessage());
         }
     }
 
