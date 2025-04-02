@@ -2,41 +2,34 @@
 !pragma Layout smetana
 
     class Main {
+    - {static} final String USER
+    - {static} final String PASSWORD
+    - {static} final String URL
+    - {static} final String DB
+    - {static} final ConnectionPool connectionPool
     }
 
 package "Entities" {
-    class Cupcake {
-    - Bottom bottom
-    - Topping topping
-    + getters();
-    + getPrice();
-    }
-
     class Topping {
     - String toppingName
     - int toppingId
     - float toppingPrice
-    + getToppingName();
-    + getToppingPrice();
     }
 
     class Bottom {
     - String bottomName
     - int bottomId
     - float bottomPrice
-    + getBottomName();
-    + getBottomPrice();
     }
 
     class User {
-    - int userId
+    - int id
     - String email
     - String password
     - int balance
     - boolean isAdmin
-    + getters();
-    + setters();
     }
+
     class ProductLine {
     - int orderLineId
     - int quantity
@@ -45,75 +38,106 @@ package "Entities" {
     - float bottomPrice
     - String toppingName
     - float toppingPrice
-    + getters();
+    - int bottomId
+    - int toppingId
     }
 
-    class Orders {
+    class Order {
     - int orderId
     - int userId
+    - String userEmail
     - List<ProductLine> productLineList
     - float orderPrice
     - boolean isPaid
-    + getters();
-    + setters();
     }
 }
-Cupcake *-- Topping
-Cupcake *-- Bottom
+
 
 package "Persistence" {
-    class orderMapper {
-    + createOrder();
-    + getOrdersByUser();
-    + getAllOrders();
-    + getOrderById();
-    + updateOrder();
-    + deleteOrder();
-    + getProductLineByOrderId();
-    + setOrderStatus();
+    class OrderMapper {
+    + {static} createOrder()
+    + {static} getOrdersByUser()
+    + {static} getAllOrders()
+    + {static} getOrderById()
+    + {static} updateOrder()
+    + {static} deleteOrder()
+    + {static} getProductLineByOrderId()
+    + {static} setOrderStatus()
     }
-class userMapper {
-    + login();
-    + getBalanceByUserId();
-    + pay();
-    + createUser();
-    + getAllUsers();
-    + updateBalance();
+class UserMapper {
+    + {static} login()
+    + {static} getBalanceByUserId()
+    + {static} pay()
+    + {static} createUser()
+    + {static} getAllUsers()
+    + {static} updateBalance()
     }
+
+    class ConnectionPool {
+        - {static} volatile ConnectionPool instance
+        - {static} HikariDataSource ds
+        - {static} final Logger LOGGER
+
+        - ConnectionPool()
+
+        + {static} getInstance()
+        + getConnection()
+        + close()
+        + {static} createHikariConnectionPool()
+        }
 }
-Orders *-- ProductLine
-Orders *-- User
-ProductLine *-- Cupcake
+
 
 package "Controllers" {
     class UserController {
-    + addRoutes();
-    + login();
-    + createUser();
-    + getAllUsers();
+    + {static} addRoutes()
+    + {static} login()
+    + {static} createUser()
+    + {static} getAllUsers()
+    + {static} logout()
     }
 
     class OrderController {
-    + addRoutes();
-    + createOrder();
-    + getPriceById();
-    + addProductLine();
-    + getOrdersByUser();
-    + getAllOrders();
-    + getOrderById();
-    + deleteOrder();
-    + viewHistory();
-    + payOrder();
+    + {static} addRoutes()
+    + {static} createOrder()
+    + {static} getAllBottomsAndToppings()
+    + {static} getOrdersByUser()
+    + {static} getAllOrders()
+    + {static} getOrderById()
+    + {static} deleteOrder()
+    + {static} viewHistory()
+    + {static} payOrder()
+    + {static} adminView()
     }
 }
-package "Test" {
-    class Test {
+package "Config" {
+    class SessionConfig {
+     + {static} sessionConfig()
+     }
+    class ThymeleafConfig{
+    + {static} templateEngine()
     }
 }
-Main -- UserController
-Main -- OrderController
-UserController -- userMapper
-OrderController -- orderMapper
+
+package "Exceptions" {
+     class DatabaseException {
+     + DatabaseException ()
+      }
+}
+
+'Entitet relationer
+Order *-- User: "En ordre skal tilhøre en user"
+Order o-- ProductLine: "En ordre kan eksistere uden produktlinjer"
+ProductLine *-- Topping: "En produktlinje skal have en topping"
+ProductLine *-- Bottom: "En produktlinje skal have en bottom"
+
+Main -- "Controllers"
+Main -- "Config"
+"Persistence" -- "Entities": Laver Entities objekter
+"Controllers" -- "Persistence": Bruger Mapper-klasser
+"Persistence" -- "Exceptions": Kaster DB exceptions
+
+
 
 @enduml
 implements ..|>
