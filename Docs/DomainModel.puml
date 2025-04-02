@@ -1,0 +1,16 @@
+@startuml
+!pragma layout smetana
+
+object User
+object Order
+object ProductLine
+object Bottom
+object Topping
+
+User *-- Order
+Order *-- ProductLine
+ProductLine o-- Bottom
+ProductLine o-- Topping
+Order o-- User
+
+@enduml
