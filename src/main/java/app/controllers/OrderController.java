@@ -164,6 +164,7 @@ public class OrderController {
                 if (orderStatusUpdateSuccess) {
                     currentOrder.setPaid(true);
                     ctx.sessionAttribute("currentOrder", null); //ordre sættes til null, så man ikke kan tilføje mere til en betalt ordre
+                    ctx.sessionAttribute("productLinesList", null);
                     ctx.redirect("viewhistory2");
                 }
             }
