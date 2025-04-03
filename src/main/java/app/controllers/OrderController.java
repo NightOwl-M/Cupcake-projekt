@@ -49,10 +49,16 @@ public class OrderController {
                 ctx.sessionAttribute("currentOrder", currentOrder);
             }
             int orderId = currentOrder.getOrderId();
-            float totalPrice = 0;
             int toppingId = Integer.parseInt(ctx.formParam("topping"));
             int bottomId = Integer.parseInt(ctx.formParam("bottom"));
             int quantity = Integer.parseInt(ctx.formParam("quantity"));
+
+            float toppingPrice = OrderMapper.getToppingPriceById(toppingId, connectionPool);
+            float bottomPrice = OrderMapper.getBottomPriceById(toppingId,connectionPool);
+
+            float totalPrice = (toppingPrice + bottomPrice) * quantity;
+
+
 
             OrderMapper.addProductLine(bottomId, toppingId, orderId, quantity, totalPrice, connectionPool); //Cupcakes gemmes i DB
             currentOrder.setProductLines(OrderMapper.getProductLineByOrderId(currentOrder.getOrderId(), connectionPool)); //Cupcakes tilføjes til ordrens List<ProductLine>
@@ -106,6 +112,56 @@ public class OrderController {
         }
     }
 
+    public static void payOrder(Context ctx, ConnectionPool connectionPool) {
+        User currentUser = ctx.sessionAttribute("currentUser");
+        Order currentOrder = ctx.sessionAttribute("currentOrder");
+
+        try {
+            boolean paymentSuccess = UserMapper.pay(currentUser.getId(), currentOrder.getOrderPrice(), connectionPool);
+            if (paymentSuccess) {
+                boolean orderStatusUpdateSuccess = OrderMapper.setOrderStatus(currentOrder.getOrderId(), true, connectionPool);
+                boolean orderSetPriceSuccess = OrderMapper.setOrderPrice(currentOrder.getOrderId(), currentOrder.getOrderPrice(), connectionPool);
+
+                if (orderStatusUpdateSuccess && orderSetPriceSuccess) {
+                    currentOrder.setPaid(true);
+                    ctx.sessionAttribute("currentOrder", null); //ordre sættes til null, så man ikke kan tilføje mere til en betalt ordre
+                    ctx.sessionAttribute("productLinesList", null);
+                    ctx.redirect("viewhistory2");
+                }
+            }
+        } catch (DatabaseException e) {
+            ctx.attribute("message", "Error: Something went wrong with the payment");
+            ctx.render("Basket.html");
+        }
+    }
+
+    public static void adminView(Context ctx, ConnectionPool connectionPool) {
+        User currentUser = ctx.sessionAttribute("currentUser");
+
+        if (currentUser == null) {
+            ctx.redirect("/login?message=Please login first");
+            return;
+        }
+        if (!currentUser.isAdmin()) {
+            ctx.redirect("/userDashboard?message=Access denied");
+            return;
+        }
+
+        try {
+            List<Order> orders = OrderMapper.getAllOrdersWithUserDetails(connectionPool);
+
+            for (Order order : orders) {
+            }
+
+            ctx.attribute("orders", orders);
+            ctx.attribute("isAdmin", true); // Tilføj specifik admin flag til view
+            ctx.render("Admin.html");
+        } catch (DatabaseException e) {
+            e.printStackTrace(); // Udskriv fejl til konsollen
+            ctx.status(500).result("Error fetching orders: " + e.getMessage());
+        }
+    }
+
     public static void getAllOrders(Context ctx, ConnectionPool connectionPool) {
         try {
             List<Order> orders = OrderMapper.getAllOrders(connectionPool);
@@ -152,57 +208,4 @@ public class OrderController {
         ctx.attribute("userEmail", user.getEmail());
         ctx.render("viewhistory2.html");
     }
-
-    public static void payOrder(Context ctx, ConnectionPool connectionPool) {
-        User currentUser = ctx.sessionAttribute("currentUser");
-        Order currentOrder = ctx.sessionAttribute("currentOrder");
-
-        try {
-            boolean paymentSuccess = UserMapper.pay(currentUser.getId(), currentOrder.getOrderPrice(), connectionPool);
-            if (paymentSuccess) {
-                boolean orderStatusUpdateSuccess = OrderMapper.setOrderStatus(currentOrder.getOrderId(), true, connectionPool);
-                if (orderStatusUpdateSuccess) {
-                    currentOrder.setPaid(true);
-                    ctx.sessionAttribute("currentOrder", null); //ordre sættes til null, så man ikke kan tilføje mere til en betalt ordre
-                    ctx.sessionAttribute("productLinesList", null);
-                    ctx.redirect("viewhistory2");
-                }
-            }
-        } catch (DatabaseException e) {
-            ctx.attribute("message", "Error: Something went wrong with the payment");
-            ctx.render("Basket.html");
-        }
-    }
-
-    public static void adminView(Context ctx, ConnectionPool connectionPool) {
-        User currentUser = ctx.sessionAttribute("currentUser");
-
-        if (currentUser == null) {
-            ctx.redirect("/login?message=Please login first");
-            return;
-        }
-        if (!currentUser.isAdmin()) {
-            ctx.redirect("/userDashboard?message=Access denied");
-            return;
-        }
-
-        try {
-            List<Order> orders = OrderMapper.getAllOrdersWithUserDetails(connectionPool);
-
-            for (Order order : orders) {
-            }
-
-            ctx.attribute("orders", orders);
-            ctx.attribute("isAdmin", true); // Tilføj specifik admin flag til view
-            ctx.render("Admin.html");
-        } catch (DatabaseException e) {
-            e.printStackTrace(); // Udskriv fejl til konsollen
-            ctx.status(500).result("Error fetching orders: " + e.getMessage());
-        }
-    }
-
-
-
-
-
 }

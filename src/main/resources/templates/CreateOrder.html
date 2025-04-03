@@ -43,7 +43,7 @@
             <option value="" disabled selected>Vælg topping</option>
             <option th:each="topping : ${allToppings}"
                     th:value="${topping.toppingId}"
-                    th:text="${topping.toppingName}">
+                    th:text="${topping.toppingName + ' | ' + topping.toppingPrice}">
             </option>
           </select>
         </div>
@@ -56,7 +56,7 @@
             <option value="" disabled selected>Vælg bund</option>
             <option th:each="bottom : ${allBottoms}"
                     th:value="${bottom.bottomId}"
-                    th:text="${bottom.bottomName}">
+                    th:text="${bottom.bottomName + ' | ' + bottom.bottomPrice}">
             </option>
           </select>
         </div>
