@@ -200,6 +200,23 @@ public class OrderMapper {
         }
     }
 
+    public static boolean setOrderPrice(int orderId, float orderPrice, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "UPDATE orders SET order_price = ? WHERE order_id = ?";
+
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setFloat(1, orderPrice);
+            ps.setInt(2, orderId);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected == 1;
+        } catch (SQLException e) {
+            throw new DatabaseException("DB fejl");
+        }
+    }
+
+
+
     public static void addProductLine(int bottomId, Integer toppingId, int orderId, int quantity, float totalPrice, ConnectionPool connectionPool) throws DatabaseException {
         String sql = "INSERT INTO productline (bottom_id, topping_id, order_id, quantity, total_price) VALUES (?, ?, ?, ?, ?)";
         try (Connection connection = connectionPool.getConnection();
@@ -215,14 +232,14 @@ public class OrderMapper {
         }
     }
 
-    public static float getPriceById(int id, ConnectionPool connectionPool) throws DatabaseException {
-        String sql = "SELECT price FROM bottom WHERE bottom_id = ?"; // Juster for topping, hvis nødvendigt
+    public static float getBottomPriceById(int id, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT bottom_price FROM bottom WHERE bottom_id = ?";
         try (Connection connection = connectionPool.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getFloat("price");
+                return rs.getFloat("bottom_price");
             } else {
                 throw new DatabaseException("Produkt ikke fundet med ID: " + id);
             }
@@ -231,7 +248,22 @@ public class OrderMapper {
         }
     }
 
-    //TODO Eventuelt smid i en mere passende Mapper
+    public static float getToppingPriceById(int id, ConnectionPool connectionPool) throws DatabaseException {
+        String sql = "SELECT topping_price FROM topping WHERE topping_id = ?";
+        try (Connection connection = connectionPool.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getFloat("topping_price");
+            } else {
+                throw new DatabaseException("Produkt ikke fundet med ID: " + id);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Fejl ved hentning af pris: " + e.getMessage());
+        }
+    }
+
     public static List<Bottom> getAllBottoms(ConnectionPool connectionPool) throws DatabaseException {
         String sql = "SELECT * FROM bottom";
         List<Bottom> allBottoms = new ArrayList<>();
@@ -253,7 +285,6 @@ public class OrderMapper {
         return allBottoms;
     }
 
-    //TODO Eventuelt smid i en mere passende Mapper
     public static List<Topping> getAllToppings(ConnectionPool connectionPool) throws DatabaseException {
         String sql = "SELECT * FROM topping";
         List<Topping> allToppings = new ArrayList<>();

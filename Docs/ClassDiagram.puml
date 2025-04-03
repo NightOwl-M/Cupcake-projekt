@@ -63,6 +63,13 @@ package "Persistence" {
     + {static} deleteOrder()
     + {static} getProductLineByOrderId()
     + {static} setOrderStatus()
+    + {static} setOrderPrice()
+    + {static} getBottomPriceById()
+    + {static} getToppingPriceById()
+    + {static} getAllBottoms()
+    + {static} getAllToppings()
+    + {static} getAllOrdersWithUserDetails()
+
     }
 class UserMapper {
     + {static} login()
