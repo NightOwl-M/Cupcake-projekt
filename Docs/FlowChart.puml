@@ -1,0 +1,62 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+left to right direction
+title Cupcake Order System Flow
+@startuml
+start
+:frontPage.html;
+
+if (User Action?) then (Create Account)
+  :Create User Form;
+  :POST /create-user;
+  :UserController.createUser();
+  :UserMapper.createUser();
+
+  if (Success?) then (yes)
+    -> "Redirect";
+    :Redirect to /login;
+  else (no)
+    -> "Error";
+    :Show error message;
+    stop
+  endif
+else (Login)
+  :Login Form;
+  :POST /login;
+  :UserController.login();
+  :UserMapper.login();
+endif
+
+if (Is Admin?) then (yes)
+  :Admin.html;
+  :OrderController.adminView();
+  :OrderMapper.getAllOrdersWithUserDetails();
+  stop
+else (no)
+  :ViewHistory2.html;
+  :OrderController.getOrdersByUser();
+  :OrderMapper.getOrdersByUser();
+  :POST /CreateOrder;
+  :CreateOrder.html;
+  :OrderController.getAllBottomsAndToppings();
+
+
+    :Select Bottom/Topping;
+    :POST /addToBasket;
+    :OrderController.createOrder();
+    :OrderMapper.createOrder();
+    :OrderMapper.addProductLine();
+    :Cart-icon();
+
+  :Basket.html;
+
+  :POST /pay;
+  :OrderController.payOrder();
+  :UserMapper.pay();
+  :OrderMapper.setOrderStatus();
+  :Redirect to /viewhistory2;
+endif
+
+stop
+@enduml
