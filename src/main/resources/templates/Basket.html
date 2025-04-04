@@ -56,7 +56,7 @@
   </div>
 
   <div class="empty-cart" th:unless="${session.currentOrder != null}">
-    <p>Din kurv er tom.</p>
+    <p>Your cart is empty.</p>
     <form method="get">
       <button class="custom-btn" type="submit" th:formaction="@{/createorder}">Shop now</button>
     </form>
@@ -67,7 +67,7 @@
 
 <script>
   document.getElementById('logout-link').addEventListener('click', function(e) {
-    if (!confirm('Er du sikker på at du vil logge ud?')) {
+    if (!confirm('Are you sure you want to logout?')) {
       e.preventDefault();
     }
   });
