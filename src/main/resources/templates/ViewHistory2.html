@@ -33,7 +33,7 @@
 
 <!-- overskrifter -->
 <div class="container">
-    <h2>Her er alle dine ordrer</h2>
+    <h2>All your orders</h2>
 </div>
 
 <div class="all-order-table">
@@ -41,17 +41,17 @@
         <table class="order-table">
             <thead>
             <tr>
-                <th>Ordrenummer</th>
+                <th>Order number</th>
                 <th>Status</th>
-                <th>Pris</th>
-                <th>Produkter</th>
+                <th>Price</th>
+                <th>Products</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="order : ${orders}">
                 <td th:text="${order.orderId}"></td>
-                <td th:if="${order.isPaid}">Betalt</td>
-                <td th:if="${!order.isPaid}">Ikke Betalt</td>
+                <td th:if="${order.isPaid}">Paid</td>
+                <td th:if="${!order.isPaid}">Unpaid</td>
                 <td th:text="${order.getOrderPrice()}"></td>
                 <td>
                     <table class="product-line-table">
@@ -59,9 +59,9 @@
                         <tr>
                             <th>Bottom</th>
                             <th>Topping</th>
-                            <th>Pris pr cupcake</th>
-                            <th>Antal</th>
-                            <th>Samlet pris for ordrelinje</th>
+                            <th>Pris foreach cupcake</th>
+                            <th>Quantity</th>
+                            <th>Total price</th>
                         </tr>
                         </thead>
                         <tbody>

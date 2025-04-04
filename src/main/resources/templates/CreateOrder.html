@@ -37,10 +37,10 @@
   <form method="post">
     <div class="cupcake-selection-container">
       <div class="input-wrapper">
-        <h3 class="selection-title">Vælg Topping</h3>
+        <h3 class="selection-title">Choose Topping</h3>
         <div class="input-box">
           <select id="topping" name="topping" class="styled-select">
-            <option value="" disabled selected>Vælg topping</option>
+            <option value="" disabled selected>toppings</option>
             <option th:each="topping : ${allToppings}"
                     th:value="${topping.toppingId}"
                     th:text="${topping.toppingName + ' | ' + topping.toppingPrice}">
@@ -50,10 +50,10 @@
       </div>
 
       <div class="input-wrapper">
-        <h3 class="selection-title">Vælg Bund</h3>
+        <h3 class="selection-title">Choose a Bottom</h3>
         <div class="input-box">
           <select id="bottom" name="bottom" class="styled-select">
-            <option value="" disabled selected>Vælg bund</option>
+            <option value="" disabled selected>bottoms</option>
             <option th:each="bottom : ${allBottoms}"
                     th:value="${bottom.bottomId}"
                     th:text="${bottom.bottomName + ' | ' + bottom.bottomPrice}">
@@ -63,11 +63,11 @@
       </div>
 
       <div class="input-wrapper">
-        <h3 class="selection-title">Antal</h3>
+        <h3 class="selection-title">Quantity</h3>
         <div class="input-box">
           <input type="number" id="quantity" name="quantity" min="1" value="1" class="styled-input">
         </div>
-        <p class="price-text">Pris: <span th:text="${orderPrice}"></span></p>
+        <p class="price-text"><span th:text="${orderPrice}"></span></p>
       </div>
     </div>
 
@@ -79,7 +79,7 @@
 
 <script>
   document.getElementById('logout-link').addEventListener('click', function(e) {
-    if (!confirm('Er du sikker på, at du vil logge ud?')) {
+    if (!confirm('Are you sure you want to logout?')) {
       e.preventDefault();
     }
   });
