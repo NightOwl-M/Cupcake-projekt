@@ -1,46 +1,72 @@
 package app.entities;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Order {
-
-controllers_getAllOrders_new
     private int orderId;
-
-    private User user;
-
-    private List<ProductLine> productList;
-
-    private double orderPrice;
-
+    private int userId;
+    private String userEmail; // Tilføjet nyt felt
+    private List<ProductLine> productLineList = new ArrayList<>();
+    private float orderPrice;
     private boolean isPaid;
 
-
-    public Order(int orderId, User user, List<ProductLine> productList, float orderPrice, boolean isPaid, LocalDate orderDate) {
+    public Order(int orderId, int userId, float orderPrice, boolean isPaid) {
         this.orderId = orderId;
-        this.user = user;
-        this.productList = productList;
+        this.userId = userId;
         this.orderPrice = orderPrice;
         this.isPaid = isPaid;
     }
 
-    public int getOrderId(){
+    // Gettere og settere
+    public int getOrderId() {
         return orderId;
     }
 
-    public User getUser(){
-        return user;
+    public int getUserId() {
+        return userId;
     }
 
-    public List<ProductLine> getProductList(){
-        return productList;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public double getOrderPrice(){
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public float getOrderPrice() {
+        // Genberegn hvis productLineList er ændret
+        if (productLineList != null && !productLineList.isEmpty()) {
+            orderPrice = 0;
+            for (ProductLine pl : productLineList) {
+                orderPrice += pl.getTotalPrice();
+            }
+        }
         return orderPrice;
     }
 
-    public boolean getIsPaid(){
+    public List<ProductLine> getProductLineList() {
+        return productLineList;
+    }
+
+    public void setProductLines(List<ProductLine> productLines) {
+        this.productLineList = productLines;
+        // Opdater ordrepris ved ændring af produktlinjer
+        getOrderPrice();
+    }
+
+    public void addProductLine(ProductLine productLine) {
+        this.productLineList.add(productLine);
+        // Opdater ordrepris
+        this.orderPrice += productLine.getTotalPrice();
+    }
+
+    public boolean isPaid() {
         return isPaid;
+    }
+
+    public void setPaid(boolean paid) {
+        isPaid = paid;
     }
 }

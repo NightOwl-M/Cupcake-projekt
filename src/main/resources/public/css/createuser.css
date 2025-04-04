@@ -1,0 +1,137 @@
+button {
+    padding: 12px 30px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    display: block;
+    margin: 20px auto;
+    width: auto;
+    min-width: 10px;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header, .footer {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.header img, .footer img {
+    max-width: 250px;
+    height: auto;
+}
+
+.nav {
+    padding: 10px 0;
+    text-align: center;
+}
+
+.nav-container a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.nav-container a.active {
+    color: #FF69B4; /* Cupcake pink accent */
+}
+
+.container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.container h3 {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+form {
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3b1d5e; /* Cupcake pink */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #9343b6; /* Deeper pink on hover */
+    transform: scale(1.05);
+}
+
+.signup-link {
+    margin-top: 15px;
+    text-align: center;
+    color: #666;
+}
+
+.signup-link a {
+    color: #FF69B4;
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    form {
+        width: 90%;
+        padding: 20px;
+    }
+
+    .nav-container a {
+        margin: 0 10px;
+    }
+}

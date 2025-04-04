@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.header {
+    background-color: #3b1d5e;
+    padding: 20px;
+    color: white;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav {
+    background-color: #f4f4f4;
+    padding: 10px 40px;
+    background: #ff7f50;
+    display: flex;
+    justify-content: space-between; /* Placerer logout og kurv i hjørnerne */
+    align-items: center;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.nav-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between; /* Placerer indholdet i venstre og højre hjørne */
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    position: absolute; /* Fastgør kurven i højre hjørne */
+    right: 90px; /* Justér afstanden fra højre kant */
+}
+
+.cart-link {
+    display: flex;
+    align-items: center;
+}
+
+/* Email */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Placerer email og logout link med lidt afstand */
+}
+
+/* Email */
+.user-email {
+    font-size: 16px; /* Juster størrelsen på emailen */
+    color: white;    /* Sørg for at emailen er synlig, hvis baggrunden er mørk */
+}
+

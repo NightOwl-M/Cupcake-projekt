@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olsker Cupcakes</title>
+  <link href="../public/css/frontpage.css" th:href="@{/css/frontpage.css}" rel="stylesheet"/>
+  <link href="../public/css/createorder.css" th:href="@{/css/createorder.css}" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+<div class="header">
+  <img alt="logo" src="../../public/images/logoMedSkrift.png" th:src="@{/images/logoMedSkrift.png}"/>
+</div>
+
+<div class="nav">
+  <div class="nav-container">
+    <div class="nav-left">
+      <a th:href="@{/viewhistory2}" th:text="${session.currentUser.email}"></a>
+      <!-- Opdateret logout link -->
+      <a href="/logout" class="nav-link" id="logout-link">Logout</a>
+    </div>
+    <div class="nav-right">
+      <a th:href="@{/basket}" class="cart-link">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-text"></span>
+        <!-- Hvis productLinesList ikke er tom, vis antallet af produktlinjer, ellers vis 0 -->
+        <span class="cart-count" th:text="${session.productLinesList != null ? session.productLinesList.size() : 0}"></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <form method="post">
+    <div class="cupcake-selection-container">
+      <div class="input-wrapper">
+        <h3 class="selection-title">Choose Topping</h3>
+        <div class="input-box">
+          <select id="topping" name="topping" class="styled-select">
+            <option value="" disabled selected>toppings</option>
+            <option th:each="topping : ${allToppings}"
+                    th:value="${topping.toppingId}"
+                    th:text="${topping.toppingName + ' | ' + topping.toppingPrice}">
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-wrapper">
+        <h3 class="selection-title">Choose a Bottom</h3>
+        <div class="input-box">
+          <select id="bottom" name="bottom" class="styled-select">
+            <option value="" disabled selected>bottoms</option>
+            <option th:each="bottom : ${allBottoms}"
+                    th:value="${bottom.bottomId}"
+                    th:text="${bottom.bottomName + ' | ' + bottom.bottomPrice}">
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-wrapper">
+        <h3 class="selection-title">Quantity</h3>
+        <div class="input-box">
+          <input type="number" id="quantity" name="quantity" min="1" value="1" class="styled-input">
+        </div>
+        <p class="price-text"><span th:text="${orderPrice}"></span></p>
+      </div>
+    </div>
+
+    <button class="custom-btn" type="submit" formaction="/addToBasket">
+      Add to basket
+    </button>
+  </form>
+</div>
+
+<script>
+  document.getElementById('logout-link').addEventListener('click', function(e) {
+    if (!confirm('Are you sure you want to logout?')) {
+      e.preventDefault();
+    }
+  });
+</script>
+
+<div class="footer"></div>
+
+</body>
+</html>

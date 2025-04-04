@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olsker Cupcakes</title>
+  <link href="../public/css/frontpage.css" th:href="@{/css/frontpage.css}" rel="stylesheet"/>
+  <link href="../public/css/basket.css" th:href="@{/css/basket.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="header">
+  <img alt="logo" src="../../public/images/logoMedSkrift.png" th:src="@{/images/logoMedSkrift.png}"/>
+</div>
+
+<div class="nav">
+  <div class="nav-container">
+    <div class="nav-left">
+      <a th:href="@{/viewhistory2}" th:text="${session.currentUser.email}"></a>
+      <a href="/logout" class="nav-link" id="logout-link">Logout</a>
+    </div>
+    <div class="nav-right">
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <h2>Your cart</h2>
+
+  <div class="basket-container" th:if="${session.currentOrder != null}">
+    <div class="order-summary">
+      <div class="order-header">
+        <span class="order-id" th:text="'Ordre #' + ${session.currentOrder.orderId}"></span>
+        <span class="order-total" th:text="'Total: ' + ${session.currentOrder.getOrderPrice()} + ' kr'"></span>
+      </div>
+
+      <div class="product-list">
+        <div class="product-item" th:each="productLine : ${session.currentOrder.productLineList}">
+          <div class="product-details">
+            <span class="product-name" th:text="${productLine.bottomName} + ' + ' + ${productLine.toppingName}"></span>
+            <span class="product-quantity" th:text="${productLine.quantity} + ' stk'"></span>
+          </div>
+          <div class="product-price" th:text="${productLine.totalPrice} + ' kr'"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-group">
+      <form method="get">
+        <button class="custom-btn continue-btn" type="submit" th:formaction="@{/createorder}">Edit order</button>
+      </form>
+
+      <form method="post" th:if="${!session.currentOrder.isPaid}">
+        <button class="custom-btn pay-btn" type="submit" th:formaction="@{/pay}">Pay</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="empty-cart" th:unless="${session.currentOrder != null}">
+    <p>Your cart is empty.</p>
+    <form method="get">
+      <button class="custom-btn" type="submit" th:formaction="@{/createorder}">Shop now</button>
+    </form>
+  </div>
+</div>
+
+<div class="footer"></div>
+
+<script>
+  document.getElementById('logout-link').addEventListener('click', function(e) {
+    if (!confirm('Are you sure you want to logout?')) {
+      e.preventDefault();
+    }
+  });
+</script>
+</body>
+</html>

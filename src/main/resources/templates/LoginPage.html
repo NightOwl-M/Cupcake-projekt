@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olsker Cupcakes - Login</title>
+    <link href="../public/css/loginpage.css" th:href="@{/css/loginpage.css}" rel="stylesheet"/>
+    <link href="../public/css/frontpage.css" th:href="@{/css/frontpage.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="header">
+    <!-- Logo billede -->
+    <img alt="logo" src="../../public/images/logoMedSkrift.png" th:src="@{/images/logoMedSkrift.png}"/>
+</div>
+
+<!-- Navigationsmenu -->
+<div class="nav">
+    <div class="nav-container">
+    </div>
+</div>
+
+<!-- Login formular -->
+<div class="container">
+    <h3>Log in</h3>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required placeholder="E-mail">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required placeholder="Password">
+        </div>
+        <button type="submit" formaction="/login">Log in</button>
+    </form>
+
+    <!-- Mangler redirect links til diverse af knapperne -->
+    <p class="signup-link">Don't have an account? <a th:href="@{/create-user}">Create account</a></p>
+</div>
+
+<div class="footer">
+    <!-- Logo billede -->
+    <img alt="logo" src="../../public/images/cupcakes1.png" th:src="@{/images/cupcakes1.png}"/>
+</div>
+</body>
+</html>

@@ -1,27 +1,41 @@
 package app.entities;
 
 public class Topping {
-
     private String toppingName;
-    private float toppingPrice;
+    private int toppingId;
+    float toppingPrice;
 
-    public Topping(String toppingName, float toppingPrice){
+    public Topping(int toppingId, String toppingName, float toppingPrice) {
+        this.toppingId = toppingId;
+        this.toppingPrice = toppingPrice;
+        this.toppingName = toppingName;
+    }
 
+    public Topping(int toppingId, float toppingPrice) {
+        this.toppingId = toppingId;
+        this.toppingPrice = toppingPrice;
+    }
+
+    public Topping(String toppingName, int toppingId, float toppingPrice) {
+        this.toppingName = toppingName;
+        this.toppingId = toppingId;
+        this.toppingPrice = toppingPrice;
+    }
+
+    public Topping(String toppingName, float toppingPrice) {
         this.toppingName = toppingName;
         this.toppingPrice = toppingPrice;
-
     }
 
-    public String getToppingName(){
-
-        return toppingName;
-
+    public int getToppingId() {
+        return toppingId;
     }
 
-    public float getToppingPrice(){
-
+    public float getToppingPrice() {
         return toppingPrice;
-
     }
 
+    public String getToppingName() {
+        return toppingName;
+    }
 }
