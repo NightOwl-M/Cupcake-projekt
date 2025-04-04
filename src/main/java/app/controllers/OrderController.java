@@ -54,7 +54,7 @@ public class OrderController {
             int quantity = Integer.parseInt(ctx.formParam("quantity"));
 
             float toppingPrice = OrderMapper.getToppingPriceById(toppingId, connectionPool);
-            float bottomPrice = OrderMapper.getBottomPriceById(toppingId,connectionPool);
+            float bottomPrice = OrderMapper.getBottomPriceById(bottomId,connectionPool);
 
             float totalPrice = (toppingPrice + bottomPrice) * quantity;
 
